@@ -1,13 +1,39 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from flask_login import login_user, current_user
-from werkzeug.security import generate_password_hash
-from itsdangerous import URLSafeTimedSerializer
 from .models import User
-from . import db, mail
-from flask_mail import Message
+from werkzeug.security import generate_password_hash, check_password_hash
+from . import db
+from flask_login import login_user, login_required, logout_user, current_user
+
 
 auth = Blueprint('auth', __name__)
-s = URLSafeTimedSerializer('Nesbru144')  # Replace with your secret key
+
+
+@auth.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        user = User.query.filter_by(email=email).first()
+        if user:
+            if check_password_hash(user.password, password):
+                flash('Logget inn!', category='success')
+                login_user(user, remember=True)
+                return redirect(url_for('views.home'))
+            else:
+                flash('Feil passord, prøv igjen.', category='error')
+        else:
+            flash('Eposten finnes ikke i systemet.', category='error')
+
+    return render_template("login.html", user=current_user)
+
+
+@auth.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('auth.login'))
+
 
 @auth.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
@@ -29,38 +55,12 @@ def sign_up():
         elif len(password1) < 5:
             flash('Passordet må inneholde minst fem tegn.', category='error')
         else:
-            new_user = User(email=email, first_name=first_name, password=generate_password_hash(password1, method='pbkdf2:sha256'))
+            new_user = User(email=email, first_name=first_name, password=generate_password_hash(
+                password1, method='pbkdf2:sha256'))
             db.session.add(new_user)
             db.session.commit()
-
-            # Generate verification token
-            token = s.dumps(email, salt='email-confirm')
-
-            # Send verification email
-            msg = Message('Vennligst bekreft eposten din', recipients=[email])
-            link = url_for('auth.confirm_email', token=token, _external=True)
-            msg.body = f'Klikk på lenken for å bekrefte eposten din: {link}'
-            mail.send(msg)
-
-            flash('Konto opprettet! Sjekk e-posten din for å bekrefte kontoen.', category='success')
+            login_user(new_user, remember=True)
+            flash('Konto opprettet!', category='success')
             return redirect(url_for('views.home'))
 
     return render_template("sign_up.html", user=current_user)
-
-@auth.route('/confirm/<token>')
-def confirm_email(token):
-    try:
-        email = s.loads(token, salt='email-confirm', max_age=3600)  # Token valid for 1 hour
-    except Exception as e:
-        flash('The confirmation link is invalid or has expired.', category='error')
-        return redirect(url_for('auth.sign_up'))
-
-    user = User.query.filter_by(email=email).first()
-    if user:
-        user.is_active = True  # Assuming you have a field to track active status
-        db.session.commit()
-        flash('E-posten din har blitt bekreftet!', category='success')
-        return redirect(url_for('auth.login'))
-    else:
-        flash('Bruker ikke funnet.', category='error')
-        return redirect(url_for('auth.sign_up'))

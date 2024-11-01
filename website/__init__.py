@@ -1,29 +1,19 @@
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_mail import Mail  # Import Flask-Mail
 from os import path
 from flask_login import LoginManager
 
+
 db = SQLAlchemy()
-mail = Mail()  # Initialize the mail object
 DB_NAME = "database.db"
 
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = '8a7df6oliqwjh5l'
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
-    
-    # Mail configuration
-    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-    app.config['MAIL_PORT'] = 587
-    app.config['MAIL_USE_TLS'] = True
-    app.config['MAIL_USERNAME'] = 'your_email@gmail.com'  # Replace with your email
-    app.config['MAIL_PASSWORD'] = 'your_email_password'    # Replace with your email password
-    app.config['MAIL_DEFAULT_SENDER'] = 'your_email@gmail.com'  # Replace with your email
-
     db.init_app(app)
-    mail.init_app(app)  # Initialize Flask-Mail with the app
 
+    
     from .views import views
     from .auth import auth
 
