@@ -17,8 +17,6 @@ def login():
         user = User.query.filter_by(email=email).first()
         if user:
             if check_password_hash(user.password, password):
-                if email == 'alexandebj@afk.no':
-                    login_user(user, remember=True)
                 flash('Logget inn!', category='success')
                 login_user(user, remember=True)
                 return redirect(url_for('views.home'))
