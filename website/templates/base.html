@@ -22,8 +22,9 @@
             style="float: right; margin-right: 2%"
             id="logout"
             href="/logout"
-            >Logg ut</a
           >
+            Logg ut {{ user.first_name }}
+          </a>
           {% else %}
           <a class="nav-item nav-link" id="home" href="/">Hovedside</a>
           <a class="nav-item nav-link" id="login" href="/login">Logg inn</a>
