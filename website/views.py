@@ -111,7 +111,6 @@ def create_traits(*args, **kwargs):
     db.session.add(Trait(name='Vurdering', klasse='Type'))
     db.session.add(Trait(name='Fysisk', klasse='Type'))
     db.session.add(Trait(name='Digitalt', klasse='Type'))
-    db.session.add(Trait(name='Forbredelser', klasse='Type'))
     db.session.add(Trait(name='Hjemmearbeid', klasse='Type'))
     db.session.add(Trait(name='Lek', klasse='Type'))
     db.session.add(Trait(name='Spill', klasse='Type'))
@@ -142,6 +141,7 @@ def create_traits(*args, **kwargs):
     db.session.add(Trait(name='Printing', klasse='Trenger'))
     db.session.add(Trait(name='Smartskjerm', klasse='Trenger'))
     db.session.add(Trait(name='Innkjøp', klasse='Trenger'))
+    db.session.add(Trait(name='Forberedelser', klasse='Trenger'))
 
     db.session.add(Trait(name='Bli kjent', klasse='Hensikt'))
     db.session.add(Trait(name='Roe ned', klasse='Hensikt'))
