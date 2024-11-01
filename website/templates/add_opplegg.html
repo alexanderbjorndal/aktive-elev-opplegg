@@ -1,0 +1,64 @@
+{% extends "base.html" %}{% block title %}Legg inn nytt opplegg{% endblock %} {%
+block content %}
+<link rel="stylesheet" href="static/legg_inn_nytt_opplegg.css" />
+
+<div id="opplegg_body">
+  <div id="centerer">
+    <h1 align="center">Legg inn nytt opplegg</h1>
+    <form method="POST">
+      <input
+        type="text"
+        name="opplegg"
+        placeholder="Skriv inn navn på opplegget"
+        size="40"
+        required
+        id="opplegg"
+        style="
+          font-size: 18px;
+          background: #eaeef1;
+          border-radius: 10px;
+          margin-bottom: 0.5rem;
+        "
+      /><br />
+      <textarea
+        placeholder="Forklar opplegget"
+        id="data"
+        name="data"
+        rows="4"
+        cols="139"
+        style="font-size: 14px"
+        wrap="soft"
+        required
+      ></textarea>
+      <!-- Dynamic Fieldsets for Traits -->
+      <ul class="ks-cboxtags">
+        {% for klasse, traits in klasse_groups.items() %}
+        <fieldset>
+          <legend>{{ klasse }}</legend>
+          <div class="container">
+            <ul class="ks-cboxtags">
+              {% for trait in traits %}
+              <li>
+                <input
+                  type="checkbox"
+                  name="tag"
+                  id="checkbox{{ trait.id }}"
+                  value="{{ trait.name }}"
+                />
+                <label for="checkbox{{ trait.id }}">{{ trait.name }}</label>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </fieldset>
+      </ul>
+      {% endfor %}
+      <div align="center">
+        <button type="submit" class="btn btn-primary" style="margin-top: 2rem">
+          Large opplegget
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head class="mainclass">
+    <meta charset="utf-8" />
+    <meta name="viewport" content "width=device-width, inital-scale = 1" />
+
+    <link rel="stylesheet" href="static/home.css" />
+
+    <title>{% block title %}Home{% endblock %}</title>
+  </head>
+  <body class="mainclass">
+    <nav class="navbar">
+      <div class="navbar-nav">
+        <div style="margin-left: 2%">
+          {% if user.is_authenticated %}
+          <a class="nav-item nav-link" id="home" href="/">Hovedside</a>
+          <a class="nav-item nav-link" id="add_opplegg" href="./add-opplegg"
+            >Legg inn nytt opplegg</a
+          >
+          <a
+            class="nav-item nav-link"
+            style="float: right; margin-right: 2%"
+            id="logout"
+            href="/logout"
+            >Logg ut</a
+          >
+          {% else %}
+          <a class="nav-item nav-link" id="home" href="/">Hovedside</a>
+          <a class="nav-item nav-link" id="login" href="/login">Logg inn</a>
+          <a class="nav-item nav-link" id="signUp" href="/sign-up"
+            >Lag ny bruker</a
+          >
+          {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages%} {% if category == 'error'
+    %}
+    <div class="alert alert-danger alert-dismissable fade show" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% else %}
+    <div class="alert alert-success alert-dismissable fade show" role="alert">
+      {{ message }}
+      <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    {% endif %} {% endfor %} {% endif %} {% endwith %}
+
+    <div class="container">{% block content %}{% endblock %}</div>
+
+    <!--Hvordan importere en .js-fil eller bilder som ligger i static-mappen-->
+    <script>
+      const heartEmpty = "{{ url_for('static', filename='Heart-empty.png') }}";
+      const heartFull = "{{ url_for('static', filename='Heart-full.png') }}";
+    </script>
+    <footer>
+      <div class="footer-content">
+        <p>
+          Opplegg for aktive elever | &copy;
+          <span id="current-year"></span> Alexander Bjørndal for Nesbru vgs |
+          Kontakt: <span id="email1"></span>
+        </p>
+      </div>
+      <button id="back-to-top" onclick="window.scrollTo(0, 0)">
+        Tilbake til toppen
+      </button>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const user1 = "alexandebj";
+        const domain1 = "afk.no";
+        const email1 = `${user1}@${domain1}`;
+        document.getElementById(
+          "email1"
+        ).innerHTML = `<a href="mailto:${email1}">${email1}</a>`;
+
+        // Update the year dynamically
+        document.getElementById("current-year").textContent =
+          new Date().getFullYear();
+      });
+    </script>
+
+    <script
+      type="text/javascript"
+      src="{{ url_for('static', filename='index.js') }}"
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

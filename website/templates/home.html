@@ -1,0 +1,139 @@
+{% extends "base.html" %}{% block title %}Aktive elever opplegg{% endblock %} {%
+block content %}
+<h1 align="center">Opplegg for aktive elever</h1>
+<div id="opplegg-color-part">
+  <div class="child">
+    <div>
+      <form id="filter-form" method="POST" onsubmit="return false;">
+        <!-- Dynamic Fieldsets for Traits -->
+        {% for klasse, traits in klasse_groups.items() %}
+        <fieldset>
+          <legend>{{ klasse }}</legend>
+          <div class="container">
+            <ul class="ks-cboxtags">
+              {% for trait in traits %}
+              <li>
+                <input
+                  type="checkbox"
+                  name="tag"
+                  id="checkbox{{ trait.id }}"
+                  value="{{ trait.name }}"
+                  onclick="updateOppleggDetails()"
+                /><label for="checkbox{{ trait.id }}">{{ trait.name }}</label>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </fieldset>
+        {% endfor %}
+        <div class="flex-container">
+          <button
+            id="remove-all-filters"
+            onclick="removeAllFilters()"
+            aria-label="Remove all filters"
+          >
+            Tøm egenskaper
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="child" id="opplegg-details">
+    <div class="list-group">
+      <div id="search-container">
+        <input type="text" id="search-bar" placeholder="Fritekst søk" />
+      </div>
+      <!--Loop through all opplegg-->
+      {% for opplegg in all_opplegg %}
+      <li
+        class="list-group-item"
+        data-traits="{{ ','.join(opplegg.traits|map(attribute='name')) }}"
+        data-title="{{ opplegg.name }}"
+        data-description="{{ opplegg.data }}"
+      >
+        <!-- Title -->
+        <div class="opplegg-title">{{ opplegg.name }}</div>
+
+        <!--Traits-->
+        <article class="opplegg-traits">
+          {% for p in opplegg.traits %}
+          <button class="opplegg-trait">{{ p.name }}</button>
+          {% endfor %}
+        </article>
+
+        <!--Favorite button and number of favorites-->
+
+        <form
+          action="{{ url_for('views.toggle_favorite') }}"
+          method="POST"
+          style="display: inline"
+        >
+          <input type="hidden" name="opplegg_id" value="{{ opplegg.id }}" />
+          <input
+            type="hidden"
+            name="favorite"
+            value="{{ 'true' if current_user.is_authenticated and opplegg in current_user.favorites else 'false' }}"
+          />
+          <button
+            type="submit"
+            style="
+              border: none;
+              background: transparent;
+              padding: 0;
+              cursor: pointer;
+            "
+          >
+            <img
+              src="{{ url_for('static', filename='Heart-' + ('full' if current_user.is_authenticated and opplegg in current_user.favorites else 'empty') + '.png') }}"
+              class="opplegg-favorite"
+            />
+          </button>
+        </form>
+        <input
+          type="hidden"
+          id="scrollPosition"
+          name="scrollPosition"
+          value="0"
+        />
+
+        <!--Delete button (change to edit later)-->
+        {% if user.role == 'Admin' %}
+        <button
+          type="button"
+          class="opplegg-delete"
+          data-opplegg-id="{{opplegg.id}}"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+        {% endif %}
+
+        <!--Description-->
+        <div class="opplegg-text" readonly>{{ opplegg.data }}</div>
+
+        <!--Date and user-->
+        <div class="opplegg-date-user">
+          Lagt til {{ opplegg.date.strftime("%d.%m.%y") }} av: {% for u in users
+          %} {% if u[0] == opplegg.user_id %} {{u[1]}} {% endif %} {% endfor %}
+        </div>
+      </li>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Check if there's a stored scroll position
+    const scrollPosition = localStorage.getItem("scrollPosition");
+    if (scrollPosition) {
+      window.scrollTo(0, parseInt(scrollPosition, 10));
+      localStorage.removeItem("scrollPosition"); // Clear the value after using it
+    }
+
+    // Store scroll position before unloading the page
+    window.onbeforeunload = function () {
+      localStorage.setItem("scrollPosition", window.scrollY);
+    };
+  });
+</script>
+{% endblock %}

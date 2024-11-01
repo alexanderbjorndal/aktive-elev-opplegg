@@ -1,0 +1,92 @@
+ul.ks-cboxtags li {
+  display: inline;
+}
+
+ul.ks-cboxtags li label {
+  display: inline-block;
+  background-color: #eaeef1; /* Default color for Not selected */
+  border: 2px solid #99a099;
+  color: #555555;
+  border-radius: 20px;
+  white-space: nowrap;
+  margin: 1px 0px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.2s;
+  padding: 5px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+ul.ks-cboxtags li input[type="checkbox"] {
+  display: none; /* Hide the checkbox */
+}
+
+ul.ks-cboxtags li input[type="checkbox"]:focus + label {
+  border: 2px solid #2d4d2a; /* Focus style */
+}
+
+ul.ks-cboxtags li label::before {
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  font-size: 12px;
+  padding: 2px 6px 2px 2px;
+  transition: transform 0.2s ease-in-out;
+}
+
+ul.ks-cboxtags li input[type="checkbox"]:checked + label::before {
+  transition: transform 0.2s ease-in-out;
+}
+.ks-cboxtags input[type="checkbox"]:checked + label {
+  border: 2px solid #eaeef1;
+  background-color: #172715; /* Color for Selected */
+  color: #eaeef1;
+}
+/* Add a max-width to the container */
+#centerer {
+  max-width: 800px; /* or your desired width */
+  margin: 0 auto; /* center the container */
+  padding: 1rem; /* some padding for aesthetics */
+}
+
+/* Style for fieldsets */
+fieldset {
+  border: 2px solid #ccc; /* border for visibility */
+  border-radius: 5px; /* rounded corners */
+  margin-bottom: 1rem; /* space between fieldsets */
+  padding: 1rem; /* inner padding */
+}
+
+/* Ensure textareas are responsive */
+textarea {
+  width: 100%; /* full width */
+  max-width: 100%; /* prevent overflow */
+  box-sizing: border-box; /* include padding in width */
+  border-radius: 5px; /* rounded corners */
+  border: 2px solid #ccc; /* border for visibility */
+}
+
+/* Optional: Style for checkboxes */
+.ks-cboxtags input[type="checkbox"] {
+  margin-right: 0.5rem; /* spacing between checkbox and label */
+}
+
+/* Adjust ul styles if needed */
+.ks-cboxtags {
+  list-style-type: none; /* remove bullet points */
+  padding: 0; /* remove padding */
+  margin: 0; /* remove margin */
+}
+
+/* Ensure labels are displayed inline */
+.ks-cboxtags label {
+  display: inline-block; /* labels on the same line */
+}

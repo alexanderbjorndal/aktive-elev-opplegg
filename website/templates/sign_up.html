@@ -1,0 +1,62 @@
+{% extends "base.html" %} {% block title %}Lag ny bruker{% endblock %} {% block
+content %}
+<div class="login-container">
+  <form method="POST" class="login-form">
+    <h3 align="center">Lag ny bruker</h3>
+
+    <div class="form-group">
+      <label for="email">Epost</label>
+      <input
+        type="email"
+        class="form-control"
+        id="email"
+        name="email"
+        placeholder="Skriv inn epost"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="firstName">Navn</label>
+      <input
+        type="text"
+        class="form-control"
+        id="firstName"
+        name="firstName"
+        placeholder="Skriv inn navn"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="password1">Passord</label>
+      <input
+        type="password"
+        class="form-control"
+        id="password1"
+        name="password1"
+        placeholder="Skriv inn passord"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="password2">Passord</label>
+      <input
+        type="password"
+        class="form-control"
+        id="password2"
+        name="password2"
+        placeholder="Bekreft passordet"
+        required
+      />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lag ny bruker</button>
+
+    <div class="form-footer">
+      <p>Har du allerede en konto? <a href="/login">Logg inn her</a></p>
+    </div>
+  </form>
+</div>
+{% endblock %}
