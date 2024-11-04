@@ -2,3 +2,5 @@ flask
 Flask-SQLAlchemy
 flask-login
 flask-mail
+itsdangerous
+Werkzeug
