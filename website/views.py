@@ -6,6 +6,9 @@ from .models import Opplegg, Trait, User
 from . import db
 import json
 from collections import defaultdict
+import shutil
+import os
+from flask import current_app
 
 views = Blueprint('views', __name__)
 
@@ -39,7 +42,7 @@ def add_opplegg():
         data = request.form.get('data')
         marked = []
         if len(data) < 1:
-            flash('For kort', category='error')
+            flash('For kort beskrivelse', category='error')
         else:
             new_name = Opplegg(name=name, data=data ,user_id=current_user.id)
             for mark in request.form.getlist('tag'):
@@ -49,21 +52,10 @@ def add_opplegg():
             db.session.add(new_name)
             if any(trait is None for trait in new_name.traits):
                 print(new_name.traits)
-                raise ValueError("Traits collection cannot contain None values.")
+                raise ValueError("Opplegget må klassifiseres med minst en egenskap.")
             else:
                 db.session.commit()
             flash('Opplegg lagt til', category='success')
-            opplegg = Opplegg.query.all()
-            users = User.query.all()
-            traits = Trait.query.all()
-            user_list = []
-
-            for u in users:
-                user_list.append([u.id, u.first_name])
-
-            klasse_groups = defaultdict(list)
-            for trait in traits:
-                klasse_groups[trait.klasse].append(trait)
         return redirect(url_for('views.home'))
     return render_template("add_opplegg.html", user=current_user, klasse_groups=klasse_groups)
 
@@ -102,7 +94,7 @@ def toggle_favorite():
 
 @event.listens_for(User.__table__, 'after_create')
 def create_users(*args, **kwargs):
-    new_user = User(email='admin@adminmail.nimda', first_name='Alexander Bjørndal', role = 'Admin', password=generate_password_hash('nimdaadmin', method='pbkdf2:sha256'))
+    new_user = User(email='admin@adminmail.nimda', first_name='Alexander Bjørndal', role = 'Admin', password=generate_password_hash('nimdaadmin', method='pbkdf2:sha256'), is_email_confirmed=True)
     db.session.add(new_user)
     db.session.commit()
 
