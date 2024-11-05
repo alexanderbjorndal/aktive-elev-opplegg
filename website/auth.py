@@ -5,7 +5,9 @@ from itsdangerous import URLSafeTimedSerializer
 from .models import User
 from . import db
 import os
+from dotenv import load_dotenv
 
+load_dotenv()
 auth = Blueprint('auth', __name__)
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -47,7 +49,6 @@ def sign_up():
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
         one_time_password_from_env = os.environ.get('ONE_TIME_PASSWORD')
-        print("YES IT IS HERE")
         print(one_time_password_from_env)
         
         if not one_time_password:
