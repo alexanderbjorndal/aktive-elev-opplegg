@@ -26,7 +26,7 @@ def create_app():
     app.config['MAIL_SERVER']='smtp.mailgun.org'
     app.config['MAIL_PORT'] = 587
     app.config['MAIL_USERNAME'] = 'postmaster@sandbox4f941c1197764b379d99228a1cca131f.mailgun.org69'
-    app.config['MAIL_PASSWORD'] = '000beadcaedc13a93d0edafedecc2084-f6fe91d3-33eac883'
+    app.config['MAIL_PASSWORD'] = 'def'
     app.config['MAIL_USE_TLS'] = True
     app.config['MAIL_USE_SSL'] = False
     app.config['MAIL_DEFAULT_SENDER'] = 'your_email@gmail.com'
