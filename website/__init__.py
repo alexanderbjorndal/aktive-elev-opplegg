@@ -14,10 +14,19 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
     
     # Mail configuration
-    app.config['MAIL_SERVER']='sandbox.smtp.mailtrap.io'
+    #app.config['MAIL_SERVER']='sandbox.smtp.mailtrap.io'
+    #app.config['MAIL_PORT'] = 587
+    #app.config['MAIL_USERNAME'] = '59e06506963569'
+    #app.config['MAIL_PASSWORD'] = '3cf541e7cb072e'
+    #app.config['MAIL_USE_TLS'] = True
+    #app.config['MAIL_USE_SSL'] = False
+    #app.config['MAIL_DEFAULT_SENDER'] = 'your_email@gmail.com'
+
+    # Mail configuration
+    app.config['MAIL_SERVER']='smtp.mailgun.org'
     app.config['MAIL_PORT'] = 587
-    app.config['MAIL_USERNAME'] = '59e06506963569'
-    app.config['MAIL_PASSWORD'] = '3cf541e7cb072e'
+    app.config['MAIL_USERNAME'] = 'postmaster@sandbox4f941c1197764b379d99228a1cca131f.mailgun.org69'
+    app.config['MAIL_PASSWORD'] = '000beadcaedc13a93d0edafedecc2084-f6fe91d3-33eac883'
     app.config['MAIL_USE_TLS'] = True
     app.config['MAIL_USE_SSL'] = False
     app.config['MAIL_DEFAULT_SENDER'] = 'your_email@gmail.com'
@@ -38,6 +47,7 @@ def create_app():
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
+    login_manager.login_message = "Funksjonen du prøvde å bruke krever innlogging."
 
     @login_manager.user_loader
     def load_user(id):
@@ -45,7 +55,7 @@ def create_app():
 
     @app.errorhandler(403)
     def forbidden(error):
-        return jsonify({'error': 'Access forbidden'}), 403
+        return jsonify({'error': 'Ingen tilgang'}), 403
 
     return app
 
