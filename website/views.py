@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash
 from sqlalchemy import event
 from .models import Opplegg, Trait, User
 from . import db
-import json
+import json, os
 from collections import defaultdict
 
 views = Blueprint('views', __name__)
@@ -90,10 +90,30 @@ def toggle_favorite():
     return redirect(url_for('views.home'))
 
 @event.listens_for(User.__table__, 'after_create')
-def create_users(*args, **kwargs):
-    new_user = User(email='admin@adminmail.nimda', first_name='Alexander Bjørndal', role = 'Admin', password=generate_password_hash('nimdaadmin', method='pbkdf2:sha256'), is_email_confirmed=True)
-    db.session.add(new_user)
-    db.session.commit()
+def create_admin_user(*args, **kwargs):
+    admin_user = User.query.filter_by(email=os.environ.get('ADMIN_EMAIL')).first()
+    if admin_user is None:
+        # Get admin email and password from environment variables
+        admin_email = os.environ.get('ADMIN_EMAIL')
+        admin_password = os.environ.get('ADMIN_PASSWORD')
+        
+        if not admin_email or not admin_password:
+            raise ValueError("Admin email and password must be set in environment variables.")
+        
+        # Create a new admin user with secure details
+        new_user = User(
+            email=admin_email,
+            first_name="Alexander Bjørndal",
+            role="Admin",  # Assuming you have roles like "Admin" in your User model
+            password=generate_password_hash(admin_password, method='pbkdf2:sha256'),
+            is_email_confirmed=True
+        )
+        
+        db.session.add(new_user)
+        db.session.commit()
+        print(f"Admin user {admin_email} created successfully.")
+    else:
+        print(f"Admin user {admin_user.email} already exists.")
 
 @event.listens_for(Trait.__table__, 'after_create')
 def create_traits(*args, **kwargs):

@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import URLSafeTimedSerializer
 from .models import User
 from . import db
+import os
 
 auth = Blueprint('auth', __name__)
 
@@ -45,6 +46,10 @@ def sign_up():
         one_time_password = request.form.get('one_time_password')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
+        one_time_password_from_env = os.environ.get('ONE_TIME_PASSWORD')
+        
+        if not one_time_password:
+            raise ValueError("One time password must be set in environment variables.")
 
         user = User.query.filter_by(email=email).first()
         if user:
@@ -57,7 +62,7 @@ def sign_up():
             flash('Passordene er ikke like.', category='error')
         elif len(password1) < 5:
             flash('Passordet må inneholde minst fem tegn.', category='error')
-        elif one_time_password != 'nesbru':
+        elif one_time_password != one_time_password_from_env:
             flash('Engangspassordet stemmer ikke, ta kontakt på alexandebj@afk.no for å få nytt engangspassord.', category='error')
         else:
             new_user = User(email=email, first_name=first_name, password=generate_password_hash(password1, method='pbkdf2:sha256'), is_email_confirmed=True)
