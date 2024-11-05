@@ -49,7 +49,7 @@ def sign_up():
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
         one_time_password_from_env = os.environ.get('ONE_TIME_PASSWORD')
-        print(one_time_password_from_env)
+        #print(one_time_password_from_env)
         
         if not one_time_password:
             raise ValueError("One time password must be set in environment variables.")
