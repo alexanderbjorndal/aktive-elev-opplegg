@@ -2,3 +2,4 @@
 venv/
 instance/sendgrid.env
 sendgrid.env
+.env
