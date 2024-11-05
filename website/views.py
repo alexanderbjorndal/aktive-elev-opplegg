@@ -6,9 +6,6 @@ from .models import Opplegg, Trait, User
 from . import db
 import json
 from collections import defaultdict
-import shutil
-import os
-from flask import current_app
 
 views = Blueprint('views', __name__)
 

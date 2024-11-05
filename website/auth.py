@@ -68,7 +68,7 @@ def sign_up():
             # Send verification email
             msg = Message('Vennligst bekreft eposten din', recipients=[email])
             link = url_for('auth.confirm_email', token=token, _external=True)
-            msg.body = f'Hei {first_name},<br><br>Velkommen til Opplegg for aktive elever! Ved å bekrefte eposten din får du tilgang til å legge inn nye opplegg samt å lagre favoritter blant oppleggene.<br><br>Klikk på lenken for å bekrefte eposten din: <a href="{link}">Bekreft epost</a><br><br>Takk for at du registrerte deg, og velkommen til vårt fellesskap! <br><br><br><br><br> Mvh. <br> Alexander Bjørndal <br> alexandebj@afk.no'
+            msg.body = f'Hei {first_name},<br><br>Velkommen til Nesbru vgs sin side med opplegg for aktive elever! Ved å bekrefte eposten din får du tilgang til å legge inn nye opplegg samt å lagre favoritter.<br><br>Klikk på lenken for å bekrefte eposten din: <a href="{link}">Bekreft epost</a><br><br>Takk for at du registrerte deg! <br><br><br><br><br> Mvh. <br> Alexander Bjørndal <br> alexandebj@afk.no'
             msg.html = msg.body  # Set the HTML body
             mail.send(msg)
 
