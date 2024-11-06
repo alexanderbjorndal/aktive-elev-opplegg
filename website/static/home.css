@@ -206,7 +206,7 @@ ul.ks-cboxtags li input[type="checkbox"]:checked + label::before {
 
 .opplegg-traits {
   background: #eaeef1;
-  align-self: start;
+  align-self: end;
   overflow: hidden; /* Hide scrollbar by default */
   display: inline-block;
   height: 100%;
