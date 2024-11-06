@@ -94,7 +94,7 @@ def create_admin_user(*args, **kwargs):
     admin_user = User.query.filter_by(email=os.environ.get('ADMIN_EMAIL')).first()
     if admin_user is None:
         # Get admin email and password from environment variables
-        admin_email = os.getenv('ADMIN_EMAIL')
+        admin_email = os.getenv('ADMIN_MAIL')
         admin_password = os.getenv('ADMIN_PASSWORD')
         
         if not admin_email or not admin_password:
