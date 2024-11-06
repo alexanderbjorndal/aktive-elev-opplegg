@@ -463,8 +463,6 @@ footer {
 
 
 
-
-
 /* Add Media Queries for Small Screens */
 @media only screen and (max-width: 768px) {
   .mainclass {
@@ -487,7 +485,7 @@ footer {
   }
 
   .opplegg-title {
-    font-size: large;
+    font-size: medium;
   }
 
   .child {
@@ -527,7 +525,7 @@ footer {
   }
 
   .opplegg-title {
-    font-size: medium;
+    font-size: small;
   }
 
   .list-group-item {
