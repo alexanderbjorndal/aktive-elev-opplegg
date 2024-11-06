@@ -45,9 +45,9 @@ def sign_up():
     if request.method == 'POST':
         email = request.form.get('email')
         first_name = request.form.get('firstName')
-        one_time_password = request.form.get('one_time_password')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
+        one_time_password = request.form.get('one_time_password')
         one_time_password_from_env = os.getenv('ONE_TIME_PASSWORD')
         
         if not one_time_password:

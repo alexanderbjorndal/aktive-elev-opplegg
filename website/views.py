@@ -94,8 +94,8 @@ def create_admin_user(*args, **kwargs):
     admin_user = User.query.filter_by(email=os.environ.get('ADMIN_EMAIL')).first()
     if admin_user is None:
         # Get admin email and password from environment variables
-        admin_email = os.environ.get('ADMIN_EMAIL')
-        admin_password = os.environ.get('ADMIN_PASSWORD')
+        admin_email = os.getenv('ADMIN_EMAIL')
+        admin_password = os.getenv('ADMIN_PASSWORD')
         
         if not admin_email or not admin_password:
             raise ValueError("Admin email and password must be set in environment variables.")
@@ -121,11 +121,10 @@ def create_traits(*args, **kwargs):
     db.session.add(Trait(name='Fysisk', klasse='Type'))
     db.session.add(Trait(name='Digitalt', klasse='Type'))
     db.session.add(Trait(name='Hjemmearbeid', klasse='Type'))
-    db.session.add(Trait(name='Lek', klasse='Type'))
-    db.session.add(Trait(name='Spill', klasse='Type'))
+    db.session.add(Trait(name='Lek/Spill', klasse='Type'))
     db.session.add(Trait(name='Tverrfagelig', klasse='Type'))
     db.session.add(Trait(name='Lærerstyrt', klasse='Type'))
-    db.session.add(Trait(name='Uten lærer', klasse='Type'))
+    db.session.add(Trait(name='Elevstyrt', klasse='Type'))
 
     db.session.add(Trait(name='Individuelt', klasse='Antall elever'))
     db.session.add(Trait(name='Par', klasse='Antall elever'))
@@ -147,7 +146,7 @@ def create_traits(*args, **kwargs):
     db.session.add(Trait(name='PC', klasse='Trenger'))
     db.session.add(Trait(name='Mobil', klasse='Trenger'))
     db.session.add(Trait(name='Internett', klasse='Trenger'))
-    db.session.add(Trait(name='Printing', klasse='Trenger'))
+    db.session.add(Trait(name='Utskrift', klasse='Trenger'))
     db.session.add(Trait(name='Smartskjerm', klasse='Trenger'))
     db.session.add(Trait(name='Innkjøp', klasse='Trenger'))
     db.session.add(Trait(name='Forberedelser', klasse='Trenger'))
@@ -158,7 +157,7 @@ def create_traits(*args, **kwargs):
     db.session.add(Trait(name='Utforske', klasse='Hensikt'))
     db.session.add(Trait(name='Kritisk tenkning', klasse='Hensikt'))
     db.session.add(Trait(name='Oppstart', klasse='Hensikt'))
-    db.session.add(Trait(name='Oppsummering', klasse='Hensikt'))
+    db.session.add(Trait(name='Oppsummere', klasse='Hensikt'))
     db.session.add(Trait(name='Eksamen', klasse='Hensikt'))
 
     db.session.commit()

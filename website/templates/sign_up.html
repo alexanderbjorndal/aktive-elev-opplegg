@@ -5,7 +5,6 @@ content %}
     <h3 align="center">Lag ny bruker</h3>
 
     <div class="form-group">
-      <label for="email">Epost</label>
       <input
         type="email"
         class="form-control"
@@ -17,7 +16,6 @@ content %}
     </div>
 
     <div class="form-group">
-      <label for="firstName">Navn</label>
       <input
         type="text"
         class="form-control"
@@ -28,18 +26,6 @@ content %}
       />
     </div>
     <div class="form-group">
-      <label for="one_time_password">Engangspassord</label>
-      <input
-        type="password"
-        class="form-control"
-        id="one_time_password"
-        name="one_time_password"
-        placeholder="Skriv inn engangspassord"
-        required
-      />
-    </div>
-    <div class="form-group">
-      <label for="password1">Passord</label>
       <input
         type="password"
         class="form-control"
@@ -51,7 +37,6 @@ content %}
     </div>
 
     <div class="form-group">
-      <label for="password2">Passord</label>
       <input
         type="password"
         class="form-control"
@@ -61,9 +46,20 @@ content %}
         required
       />
     </div>
+    <div class="form-group">
+      <input
+        type="password"
+        class="form-control"
+        id="one_time_password"
+        name="one_time_password"
+        placeholder="Skriv inn engangskode"
+        required
+      />
+    </div>
 
     <button type="submit" class="btn btn-primary">Lag ny bruker</button>
-
+    <p></p>
+    <p></p>
     <div class="form-footer">
       <p>Har du allerede en konto? <a href="/login">Logg inn her</a></p>
     </div>

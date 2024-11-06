@@ -17,7 +17,7 @@ ul.ks-cboxtags li label {
   -webkit-tap-highlight-color: transparent;
   transition: all 0.2s;
   padding: 5px 8px;
-  font-size: medium;
+  font-size: small;
   cursor: pointer;
 }
 
@@ -65,6 +65,20 @@ fieldset {
   padding: 1rem; /* inner padding */
 }
 
+/* Styling for the form fields to match the login form */
+input[type="text"],
+textarea,
+input[type="email"],
+input[type="password"] {
+  width: 100%; /* full width */
+  padding: 10px;
+  font-size: 16px;
+  background-color: #eaeef1;; /* Light background color */
+  border-radius: 5px; /* Rounded corners */
+  border: 1px solid #ccc; /* Border for inputs */
+  margin-bottom: 15px; /* Space between fields */
+}
+
 /* Ensure textareas are responsive */
 textarea {
   width: 100%; /* full width */
@@ -72,6 +86,8 @@ textarea {
   box-sizing: border-box; /* include padding in width */
   border-radius: 5px; /* rounded corners */
   border: 2px solid #ccc; /* border for visibility */
+  resize: none;
+  height: 150px; /* Fixed height for the textarea */
 }
 
 /* Optional: Style for checkboxes */
@@ -90,7 +106,6 @@ textarea {
 .ks-cboxtags label {
   display: inline-block; /* labels on the same line */
 }
-
 
 /* Add Media Queries for Small Screens */
 @media only screen and (max-width: 768px) {

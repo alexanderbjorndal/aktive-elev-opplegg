@@ -408,6 +408,7 @@ footer {
   color: #fff; /* Light text */
   text-align: center; /* Center text */
   padding: 5px 0; /* Reduced vertical padding */
+  margin-top: 20px;
 }
 
 .footer-content a {
@@ -445,7 +446,7 @@ footer {
 }
 
 .form-control {
-  width: 60%; /* Adjust width for input fields */
+  width: 100%; /* Adjust width for input fields */
   text-align: left; /* Align text inside the input to the right */
 }
 .form-footer {
