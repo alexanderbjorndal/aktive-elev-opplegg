@@ -526,7 +526,7 @@ footer {
   .opplegg-text {
     -webkit-line-clamp: 2; /* Limit text length on smaller screens */
     line-clamp: 2;
-    font-size: small;
+    font-size: x-small;
   }
 
   #search-bar {
@@ -593,7 +593,7 @@ footer {
   .opplegg-text {
     -webkit-line-clamp: 2; /* Limit text length even further on very small screens */
     line-clamp: 2;
-    font-size: smaller;
+    font-size: xx-small;
   }
 
   .form-control {
