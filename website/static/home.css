@@ -40,6 +40,7 @@ fieldset {
   background-color: #eaeef1; /* Optional: background color */
 }
 
+/* Global Styles for List Items and Titles */
 ul.ks-cboxtags li {
   display: inline;
 }
@@ -99,6 +100,7 @@ ul.ks-cboxtags li input[type="checkbox"]:checked + label::before {
   transition: transform 0.2s ease-in-out;
 }
 
+/* Flexbox Layout for Two Main Sections */
 #opplegg-color-part {
   background: #eaeef1;
   padding: 0.1rem;
@@ -321,6 +323,7 @@ ul.ks-cboxtags li input[type="checkbox"]:checked + label::before {
   grid-area: 5 / 4 / 6 / 5;
 }
 
+/* Navigation Bar */
 /* Add a black background color to the top navigation */
 .navbar-nav {
   background-color: #4f4f4f;
@@ -406,12 +409,15 @@ footer {
   color: #fff; /* Link color */
   text-decoration: underline; /* Underline links */
 }
+
+/* Add back-to-top button styles */
 #back-to-top {
   margin-top: 5px; /* Reduced margin */
   padding: 5px 8px; /* Slightly reduced padding */
   cursor: pointer;
 }
 
+/* Form Styles for Login Page */
 .login-container {
   max-width: 400px; /* Set a max width for the form */
   margin: 50px auto; /* Center the form vertically */
@@ -453,4 +459,92 @@ footer {
 
 .btn-primary {
   margin-top: 30px; /* Add space above the button */
+}
+
+
+
+
+
+/* Add Media Queries for Small Screens */
+@media only screen and (max-width: 768px) {
+  .mainclass {
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+
+  .container {
+    font-size: 14px; /* Smaller text for mobile */
+  }
+
+  .navbar-nav a {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .list-group-item {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .opplegg-title {
+    font-size: large;
+  }
+
+  .child {
+    padding: 0.5rem;
+  }
+
+  .child:first-child,
+  .child:last-child {
+    flex: 1;
+  }
+
+  #opplegg-color-part {
+    flex-direction: column;
+  }
+
+  .opplegg-text {
+    -webkit-line-clamp: 2; /* Limit text length on smaller screens */
+    line-clamp: 2;
+    font-size: small;
+  }
+
+  #search-bar {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .login-container {
+    width: 90%;
+    margin: 20px auto;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .navbar-nav a {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .opplegg-title {
+    font-size: medium;
+  }
+
+  .list-group-item {
+    padding: 10px;
+  }
+
+  .child {
+    padding: 0.5rem;
+  }
+
+  .opplegg-text {
+    -webkit-line-clamp: 2; /* Limit text length even further on very small screens */
+    line-clamp: 2;
+    font-size: smaller;
+  }
+
+  .form-control {
+    width: 100%; /* Make form inputs full width on small screens */
+  }
 }

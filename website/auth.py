@@ -48,8 +48,7 @@ def sign_up():
         one_time_password = request.form.get('one_time_password')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
-        one_time_password_from_env = os.environ.get('ONE_TIME_PASSWORD')
-        #print(one_time_password_from_env)
+        one_time_password_from_env = os.getenv('ONE_TIME_PASSWORD')
         
         if not one_time_password:
             raise ValueError("One time password must be set in environment variables.")
@@ -72,7 +71,9 @@ def sign_up():
             db.session.add(new_user)
             db.session.commit()
 
-            flash('Konto opprettet!', category='success')
+            login_user(new_user)
+
+            flash('Konto opprettet og du er logget inn!', category='success')
             return redirect(url_for('views.home'))
 
     return render_template("sign_up.html", user=current_user)
