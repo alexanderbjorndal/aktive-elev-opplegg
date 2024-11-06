@@ -216,6 +216,11 @@ ul.ks-cboxtags li input[type="checkbox"]:checked + label::before {
   max-height: 100px; /* Limit the height to avoid overlap */
   max-width: 90vw;
   flex-shrink: 0; /* Prevent shrinking */
+  
+  display: flex;  /* Add flexbox layout */
+  flex-direction: row;  /* Align children horizontally */
+  flex-wrap: wrap;  /* Allow wrapping if necessary */
+  justify-content: flex-end;  /* Align children to the right */
 }
 
 .opplegg-traits:hover {
