@@ -555,6 +555,10 @@ footer {
   max-width: 40vw;
 }
 
+  .opplegg-date-user {
+  font-size: 10px;
+}
+
 }
 
 @media only screen and (max-width: 480px) {
@@ -611,6 +615,10 @@ footer {
 .opplegg-traits {
   max-height: 100px; /* Limit the height to avoid overlap */
   max-width: 30vw;
+}
+
+    .opplegg-date-user {
+  font-size: 8px;
 }
 
 }
