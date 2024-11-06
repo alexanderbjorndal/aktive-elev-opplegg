@@ -103,12 +103,12 @@ def create_admin_user(*args, **kwargs):
         # Create a new admin user with secure details
         new_user = User(
             email=admin_email,
-            first_name="Alexander Bjørndal",
-            role="Admin",  # Assuming you have roles like "Admin" in your User model
+            first_name='Alexander Bjørndal',
+            role='Admin', 
             password=generate_password_hash(admin_password, method='pbkdf2:sha256'),
             is_email_confirmed=True
         )
-        
+
         db.session.add(new_user)
         db.session.commit()
         print(f"Admin user {admin_email} created successfully.")
