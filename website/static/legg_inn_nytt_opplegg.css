@@ -17,7 +17,7 @@ ul.ks-cboxtags li label {
   -webkit-tap-highlight-color: transparent;
   transition: all 0.2s;
   padding: 5px 8px;
-  font-size: 12px;
+  font-size: medium;
   cursor: pointer;
 }
 
@@ -37,7 +37,7 @@ ul.ks-cboxtags li label::before {
   -webkit-font-smoothing: antialiased;
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
-  font-size: 12px;
+  font-size: medium;
   padding: 2px 6px 2px 2px;
   transition: transform 0.2s ease-in-out;
 }
@@ -89,4 +89,48 @@ textarea {
 /* Ensure labels are displayed inline */
 .ks-cboxtags label {
   display: inline-block; /* labels on the same line */
+}
+
+
+/* Add Media Queries for Small Screens */
+@media only screen and (max-width: 768px) {
+#centerer {
+  max-width: 700px; /* or your desired width */
+  margin: 0 auto; /* center the container */
+  padding: 1rem; /* some padding for aesthetics */
+}
+
+ul.ks-cboxtags li label {
+  padding: 4px 6px;
+  font-size: small;
+}
+
+
+ul.ks-cboxtags li label::before {
+  font-weight: 700;
+  font-size: small;
+  padding: 2px 5px 2px 2px;
+  transition: transform 0.2s ease-in-out;
+}
+}
+
+@media only screen and (max-width: 480px) {
+#centerer {
+  max-width: 480px; /* or your desired width */
+  margin: 0 auto; /* center the container */
+  padding: 1rem; /* some padding for aesthetics */
+}
+
+ul.ks-cboxtags li label {
+  padding: 3px 5px;
+  font-size: smaller;
+}
+
+
+ul.ks-cboxtags li label::before {
+  font-weight: 900;
+  font-size: smaller;
+  padding: 2px 5px 2px 2px;
+  transition: transform 0.2s ease-in-out;
+}
 }
