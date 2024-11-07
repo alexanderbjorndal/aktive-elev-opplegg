@@ -468,6 +468,38 @@ footer {
 }
 
 
+/* Remove default link styles */
+a.list-group-item {
+  text-decoration: none;  /* Remove underlining */
+  color: inherit;         /* Inherit color from parent */
+}
+
+/* Make sure the list item does not show any borders or links styles */
+a.list-group-item:hover {
+  cursor: pointer;       /* Change cursor on hover */
+  border: 2px solid #a0a9a0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /* Add Media Queries for Small Screens */

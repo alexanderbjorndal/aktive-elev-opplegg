@@ -46,7 +46,7 @@ block content %}
       </div>
       <!--Loop through all opplegg-->
       {% for opplegg in all_opplegg %}
-      <li
+      <a href="{{ url_for('views.se_opplegg', opplegg_id=opplegg.id) }}"
         class="list-group-item"
         data-traits="{{ ','.join(opplegg.traits|map(attribute='name')) }}"
         data-title="{{ opplegg.name }}"
@@ -116,7 +116,7 @@ block content %}
           Lagt til {{ opplegg.date.strftime("%d.%m.%y") }} av: {% for u in users
           %} {% if u[0] == opplegg.user_id %} {{u[1]}} {% endif %} {% endfor %}
         </div>
-      </li>
+      </a>
       {% endfor %}
     </div>
   </div>

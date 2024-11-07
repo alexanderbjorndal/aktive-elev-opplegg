@@ -89,6 +89,22 @@ def toggle_favorite():
     db.session.commit()
     return redirect(url_for('views.home'))
 
+@views.route('/se-opplegg/<int:opplegg_id>')
+def se_opplegg(opplegg_id):
+    opplegg = Opplegg.query.get_or_404(opplegg_id)
+    users = User.query.all()
+    traits = Trait.query.all()
+    user_list = []
+
+    for u in users:
+        user_list.append([u.id, u.first_name])
+
+    klasse_groups = defaultdict(list)
+    for trait in traits:
+        klasse_groups[trait.klasse].append(trait)
+    return render_template('views.se_opplegg', opplegg=opplegg, user=current_user, users=user_list, all_opplegg=opplegg, traits=traits, klasse_groups=klasse_groups)
+
+
 @event.listens_for(User.__table__, 'after_create')
 def create_admin_user(*args, **kwargs):
     admin_user = User.query.filter_by(email=os.environ.get('ADMIN_EMAIL')).first()
