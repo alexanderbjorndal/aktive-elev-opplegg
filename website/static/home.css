@@ -364,6 +364,50 @@ ul.ks-cboxtags li input[type="checkbox"]:checked + label::before {
   color: white;
 }
 
+/* Tooltip Styling */
+li[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.75); /* Semi-transparent black */
+  color: #fff; /* White text */
+  padding: 4px 8px; /* Smaller padding for a more subtle effect */
+  border-radius: 3px; /* Rounded corners */
+  font-size: 12px; /* Smaller font size for a subtle feel */
+  max-width: 2000px;  /* Control the width (you can adjust this as needed) */
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;  /* Tooltip does not interfere with clicks */
+  transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth transition */
+  transform: translateY(10px); /* Slightly move it down */
+  white-space: nowrap;  /* Prevent text from wrapping */
+}
+
+/* Optional: Add a small delay to show the tooltip */
+li[data-tooltip]:hover::after {
+  transition: opacity 0.2s ease-in-out;
+  opacity: 1;
+}
+
+/* Tooltip positioning */
+li {
+  position: relative; /* Needed for positioning the tooltip */
+}
+
+/* Show tooltip on hover */
+li[data-tooltip]:hover::after {
+  opacity: 1;
+  transform: translateY(10px); /* Keep initial offset */
+}
+
+/* Move tooltip further down below the li-element */
+li[data-tooltip]:hover::after {
+  top: 100%; /* Position the tooltip further below the list item (increase percentage to move it lower) */
+  left: 50%;
+  transform: translateX(-50%) translateY(10px); /* Center and move further down */
+}
+
+
+
 /* Hide the link that should open and close the topnav on small screens */
 .topnav .icon {
   display: none;

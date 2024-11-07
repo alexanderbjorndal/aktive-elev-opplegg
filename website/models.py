@@ -27,6 +27,7 @@ class Trait(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
     klasse = db.Column(db.String(100))
+    forklaring = db.Column(db.String(500))
 
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
