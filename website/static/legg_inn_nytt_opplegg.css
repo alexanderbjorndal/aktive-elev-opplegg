@@ -65,6 +65,12 @@ fieldset {
   padding: 1rem; /* inner padding */
 }
 
+textarea:disabled {
+    color: black; /* Text color */
+    background-color: #eaeef1; /* Background color */
+    border: 1px solid #ccc; /* Border color (if desired) */
+}
+
 /* Styling for the form fields to match the login form */
 input[type="text"],
 textarea,

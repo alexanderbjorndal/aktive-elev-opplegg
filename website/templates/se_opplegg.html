@@ -1,63 +1,56 @@
-{% extends "base.html" %}{% block title %}Se opplegg{% endblock %} {%
+{% extends "base.html" %}{% block title %}{{ opplegg.name }}{% endblock %} {%
 block content %}
-<link rel="stylesheet" href="static/legg_inn_nytt_opplegg.css" />
+<link rel="stylesheet" href="{{ url_for('static', filename='legg_inn_nytt_opplegg.css') }}" />
 
 <div id="opplegg_body">
   <div id="centerer">
-    <h1 align="center">Se detaljene i et opplegg</h1>
+    <h1 align="center">{{ opplegg.name }}</h1>
     <form method="POST">
-      <input
-        type="text"
-        name="opplegg"
-        placeholder="Skriv inn navn på opplegget"
-        size="40"
-        required
-        id="opplegg"
-        style="
-          font-size: 18px;
-          background: #eaeef1;
-          border-radius: 10px;
-          margin-bottom: 0.5rem;
-        "
-      /><br />
-      <textarea
+<br />
+    <textarea
         placeholder="Forklar opplegget"
-        id="data"
+        id="datas"
         name="data"
         rows="4"
         cols="139"
         style="font-size: 14px"
         wrap="soft"
         required
-      ></textarea>
+        disabled
+    >{{ opplegg.data }}</textarea>
 
-<div class="form-footer">
+    <div class="form-footer">
+        <p>Alle egenskapene opplegget <b>kan</b> ha</p>
     </div>
 
-      <!-- Dynamic Fieldsets for Traits -->
-      <ul class="ks-cboxtags">
+    <!-- Dynamic Fieldsets for Traits -->
+    <ul class="ks-cboxtags">
         {% for klasse, traits in klasse_groups.items() %}
-        <fieldset>
-          <legend>{{ klasse }}</legend>
-          <div class="container">
-            <ul class="ks-cboxtags">
-              {% for trait in traits %}
-              <li>
-                <input
-                  type="checkbox"
-                  name="tag"
-                  id="checkbox{{ trait.id }}"
-                  value="{{ trait.name }}"
-                />
-                <label for="checkbox{{ trait.id }}">{{ trait.name }}</label>
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-        </fieldset>
-      </ul>
-      {% endfor %}
-    </form>
+            <fieldset>
+                <legend>{{ klasse }}</legend>
+                <div class="container">
+                    <ul class="ks-cboxtags">
+                    {% for trait in traits %}
+                    
+                        <li>
+                            <input
+                                type="checkbox"
+                                name="tags"
+                                id="checkbox{{ trait.id }}"
+                                value="{{ trait.name }}"
+                                {% if trait in opplegg.traits %} checked {% endif %}
+            disabled
+                            />
+                            <label for="checkbox{{ trait.id }}">{{ trait.name }}</label>
+                        </li>
+                    {% endfor %}
+                </ul>
+                </div>
+            </fieldset>
+        {% endfor %}
+    </ul>
+</form>
   </div>
 </div>
 {% endblock %}
+

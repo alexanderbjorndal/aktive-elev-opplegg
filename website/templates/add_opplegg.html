@@ -1,6 +1,6 @@
 {% extends "base.html" %}{% block title %}Legg inn nytt opplegg{% endblock %} {%
 block content %}
-<link rel="stylesheet" href="static/legg_inn_nytt_opplegg.css" />
+<link rel="stylesheet" href="{{ url_for('static', filename='legg_inn_nytt_opplegg.css') }}" />
 
 <div id="opplegg_body">
   <div id="centerer">

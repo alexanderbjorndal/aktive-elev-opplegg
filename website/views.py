@@ -89,8 +89,12 @@ def toggle_favorite():
     db.session.commit()
     return redirect(url_for('views.home'))
 
-@views.route('/se-opplegg/<int:opplegg_id>')
-def se_opplegg(opplegg_id):
+@views.route('/se-opplegg', methods=['GET'])
+def se_opplegg():
+    opplegg_id = request.args.get('opplegg_id')  # Get the query parameter
+    if not opplegg_id:
+        return "Missing opplegg_id", 400  # Handle case where opplegg_id is not provided
+
     opplegg = Opplegg.query.get_or_404(opplegg_id)
     users = User.query.all()
     traits = Trait.query.all()
@@ -102,8 +106,16 @@ def se_opplegg(opplegg_id):
     klasse_groups = defaultdict(list)
     for trait in traits:
         klasse_groups[trait.klasse].append(trait)
-    return render_template('views.se_opplegg', opplegg=opplegg, user=current_user, users=user_list, all_opplegg=opplegg, traits=traits, klasse_groups=klasse_groups)
 
+    checked_trait_ids = {trait.id for trait in opplegg.traits}
+
+    return render_template(
+        'se_opplegg.html',
+        opplegg=opplegg,
+        user=current_user,
+        klasse_groups=klasse_groups,
+        checked_trait_ids=checked_trait_ids
+    )
 
 @event.listens_for(User.__table__, 'after_create')
 def create_admin_user(*args, **kwargs):
