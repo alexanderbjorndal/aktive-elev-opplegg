@@ -207,6 +207,7 @@ ul.ks-cboxtags li input[type="checkbox"]:checked + label::before {
 .opplegg-traits {
   background: #eaeef1;
   align-self: start;
+  justify-self: end;
   overflow: hidden; /* Hide scrollbar by default */
   display: inline-block;
   height: 100%;
@@ -215,6 +216,11 @@ ul.ks-cboxtags li input[type="checkbox"]:checked + label::before {
   max-height: 100px; /* Limit the height to avoid overlap */
   max-width: 90vw;
   flex-shrink: 0; /* Prevent shrinking */
+  
+  display: flex;  /* Add flexbox layout */
+  flex-direction: row;  /* Align children horizontally */
+  flex-wrap: wrap;  /* Allow wrapping if necessary */
+  justify-content: flex-end;  /* Align children to the right */
 }
 
 .opplegg-traits:hover {
@@ -558,7 +564,7 @@ a.list-group-item:hover {
   .opplegg-text {
     -webkit-line-clamp: 2; /* Limit text length on smaller screens */
     line-clamp: 2;
-    font-size: small;
+    font-size: x-small;
   }
 
   #search-bar {
@@ -585,6 +591,10 @@ a.list-group-item:hover {
 .opplegg-traits {
   max-height: 100px; /* Limit the height to avoid overlap */
   max-width: 40vw;
+}
+
+  .opplegg-date-user {
+  font-size: 10px;
 }
 
 }
@@ -621,7 +631,7 @@ a.list-group-item:hover {
   .opplegg-text {
     -webkit-line-clamp: 2; /* Limit text length even further on very small screens */
     line-clamp: 2;
-    font-size: smaller;
+    font-size: xx-small;
   }
 
   .form-control {
@@ -643,6 +653,10 @@ a.list-group-item:hover {
 .opplegg-traits {
   max-height: 100px; /* Limit the height to avoid overlap */
   max-width: 30vw;
+}
+
+    .opplegg-date-user {
+  font-size: 8px;
 }
 
 }
