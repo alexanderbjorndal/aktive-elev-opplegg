@@ -1,0 +1,22 @@
+Admin-page:
+- Users
+- Edit
+- Logs?
+
+Main page:
+- Number of favorites
+- Number of comments
+- Show only favorites
+
+Se opplegg:
+- Comments
+- Number of likes
+- Similar opplegg
+
+Add opplegg:
+- Similar opplegg
+
+User pages:
+- See opplegg
+- See favorites
+- See comments
