@@ -64,6 +64,8 @@ def sign_up():
             flash('Passordene er ikke like.', category='error')
         elif len(password1) < 5:
             flash('Passordet må inneholde minst fem tegn.', category='error')
+        elif not email.endswith('afk.no'):
+            flash('Eposten må være en jobbepost fra Akershus', category='error')
         elif one_time_password != one_time_password_from_env:
             flash('Engangspassordet stemmer ikke, ta kontakt på alexandebj@afk.no for å få nytt engangspassord.', category='error')
         else:
