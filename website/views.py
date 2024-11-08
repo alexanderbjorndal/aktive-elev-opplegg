@@ -89,8 +89,32 @@ def toggle_favorite():
     db.session.commit()
     return redirect(url_for('views.home'))
 
-@views.route('/se-opplegg', methods=['GET'])
+@views.route('/se-opplegg', methods=['GET', 'POST'])
 def se_opplegg():
+    if request.method == 'POST':
+        if current_user.role != 'admin':
+            abort(403)
+
+        name = request.form.get('opplegg')
+        data = request.form.get('data')
+        marked = []
+        if len(data) < 1:
+            flash('For kort beskrivelse', category='error')
+        else:
+            new_name = Opplegg(name=name, data=data ,user_id=current_user.id)
+            for mark in request.form.getlist('tag'):
+                if mark:
+                    new_trait = db.session.query(Trait).filter_by(name=mark).first()
+                    new_name.traits.append(new_trait)
+            db.session.add(new_name)
+            if any(trait is None for trait in new_name.traits):
+                print(new_name.traits)
+                raise ValueError("Opplegget må klassifiseres med minst en egenskap.")
+            else:
+                db.session.commit()
+            flash('Opplegg lagt til', category='success')
+        return redirect(url_for('views.home'))
+    
     opplegg_id = request.args.get('opplegg_id')  # Get the query parameter
     if not opplegg_id:
         return "Missing opplegg_id", 400  # Handle case where opplegg_id is not provided
@@ -132,7 +156,7 @@ def create_admin_user(*args, **kwargs):
         new_user = User(
             email=admin_email,
             first_name='Alexander Bjørndal',
-            role='Admin', 
+            role='admin', 
             password=generate_password_hash(admin_password, method='pbkdf2:sha256'),
             is_email_confirmed=True
         )

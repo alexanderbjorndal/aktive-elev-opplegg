@@ -6,7 +6,20 @@ block content %}
   <div id="centerer">
     <h1 align="center">{{ opplegg.name }}</h1>
     <form method="POST">
-<br />
+        {% if user.role == 'admin' %}
+      <input
+        type="text"
+        name="opplegg"
+        value ={{ opplegg.name }}
+        size="40"
+        id="opplegg"
+        style="
+          font-size: 18px;
+          background: #eaeef1;
+          border-radius: 10px;
+          margin-bottom: 0.5rem;
+        "
+      /><br />{% endif %}
     <textarea
         placeholder="Forklar opplegget"
         id="datas"
@@ -16,7 +29,7 @@ block content %}
         style="font-size: 14px"
         wrap="soft"
         required
-        disabled
+        {% if user.role != 'admin' %} disabled {% endif %}
     >{{ opplegg.data }}</textarea>
 
     <div class="form-footer">
@@ -39,7 +52,7 @@ block content %}
                                 id="checkbox{{ trait.id }}"
                                 value="{{ trait.name }}"
                                 {% if trait in opplegg.traits %} checked {% endif %}
-            disabled
+                                {% if user.role != 'admin' %} disabled {% endif %}
                             />
                             <label for="checkbox{{ trait.id }}">{{ trait.name }}</label>
                         </li>
@@ -49,8 +62,17 @@ block content %}
             </fieldset>
         {% endfor %}
     </ul>
-</form>
+{% if user.role == 'admin' %}<div align="center">
+        <button type="submit" onsubmit="disableSubmitButton()" class="btn btn-primary" style="margin-top: 2rem">
+          Large opplegget
+        </button>
+      </div>
+    </form>
+    <script>
+      function disableSubmitButton() {
+          document.getElementById('submit-button').disabled = true;
+      }
+</script>
   </div>
-</div>
+</div>{% endif %}
 {% endblock %}
-
