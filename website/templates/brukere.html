@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Admin - alle brukere{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 align="center">Alle brukere</h1>
+    
+    <!-- Table displaying the users -->
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Epost</th>
+                <th>Navn</th>
+                <th>Opplegg</th>
+                <th>Favorites</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in user_data %}
+                <tr>
+                    <td>{{ data.user.id }}</td>
+                    <td>{{ data.user.email }}</td>
+                    <td>{{ data.user.first_name }}</td>
+                    <td>
+                        {% if data.opplegg %}
+                            <ul class="list-unstyled">
+                                {% for opp in data.opplegg %}
+                                    <li>
+                                        <a href="{{ url_for('views.se_opplegg', opplegg_id=opp.id) }}">
+                                            {{ opp.name }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            Ingen opplegg lastet opp
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if data.favorites %}
+                            <ul class="list-unstyled">
+                                {% for favorite in data.favorites %}
+                                    <li>
+                                        <a href="{{ url_for('views.se_opplegg', opplegg_id=favorite.id) }}">
+                                            {{ favorite.name }}
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            Ingen favoritter
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
