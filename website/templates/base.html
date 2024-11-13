@@ -12,7 +12,21 @@
     <nav class="navbar">
       <div class="navbar-nav">
         <div style="margin-left: 2%">
-          {% if user.is_authenticated %}
+          {% if user.role == 'admin' %}
+          <a class="nav-item nav-link" id="home" href="/">Hovedside</a>
+          <a class="nav-item nav-link" id="add_opplegg" href="./add-opplegg"
+            >Legg inn nytt opplegg</a
+          >
+          <a class="nav-item nav-link" id="users" href="./brukere">Brukere</a>
+          <a
+            class="nav-item nav-link"
+            style="float: right; margin-right: 2%"
+            id="logout"
+            href="/logout"
+          >
+            Logg ut {{ user.first_name }}
+          </a>
+          {% elif user.is_authenticated %}
           <a class="nav-item nav-link" id="home" href="/">Hovedside</a>
           <a class="nav-item nav-link" id="add_opplegg" href="./add-opplegg"
             >Legg inn nytt opplegg</a

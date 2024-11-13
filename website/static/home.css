@@ -414,8 +414,12 @@ li[data-tooltip]:hover::after {
 }
 
 #search-container {
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between; /* Makes sure the search bar and button are spaced evenly */
+  align-items: center; /* Aligns them vertically */
+  margin-bottom: 15px;
 }
+
 
 #search-bar {
   padding: 10px;
@@ -442,6 +446,28 @@ li[data-tooltip]:hover::after {
 }
 
 #remove-all-filters:focus {
+  outline: none; /* Remove default outline */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow on focus */
+}
+
+#toggle-favorites {
+  background-color: #f0f0f0; /* Light gray for a discrete color */
+  color: #333; /* Darker text color for contrast */
+  border: 1px solid #ccc; /* Subtle border */
+  border-radius: 5px; /* Slight rounding for a softer look */
+  padding: 5px 10px; /* Smaller padding for a smaller button */
+  font-size: 14px; /* Adjusted font size */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s, border-color 0.3s; /* Smooth transitions */
+  margin-right: 15px;
+}
+
+#toggle-favorites:hover {
+  background-color: #e0e0e0; /* Slightly darker on hover */
+  border-color: #aaa; /* Darker border on hover */
+}
+
+#toggle-favorites:focus {
   outline: none; /* Remove default outline */
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow on focus */
 }
@@ -532,7 +558,41 @@ a.list-group-item:hover {
 
 
 
+/* Ensure the table width spans evenly */
+table {
+  width: 100%;
+  table-layout: fixed;
+}
 
+/* Make sure the columns are aligned and wrap text where necessary */
+th, td {
+  text-align: left;
+  padding: 10px;
+  vertical-align: middle;
+}
+
+/* Adjust the list inside the table cells (for opplegg and favorites) */
+ul.list-unstyled {
+  margin: 0;
+  padding-left: 20px;
+}
+
+ul.list-unstyled li {
+  word-wrap: break-word; /* Break words to avoid overflow */
+}
+
+
+/* Optional: Adjust table header to make it stand out */
+th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Optional: Add some spacing between rows */
+tr {
+  border-bottom: 1px solid #ddd;
+}
 
 
 

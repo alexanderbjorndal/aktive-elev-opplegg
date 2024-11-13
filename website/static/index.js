@@ -162,6 +162,7 @@ document.querySelectorAll('input[name="tag"]').forEach((checkbox) => {
   });
 });
 
+let debounceTimer;
 const searchBar = document.getElementById("search-bar");
 searchBar.addEventListener("keyup", function () {
   clearTimeout(debounceTimer);
@@ -184,3 +185,26 @@ document.querySelectorAll(".opplegg-delete").forEach((button) => {
     deleteOpplegg(oppleggId);
   });
 });
+
+// Function to toggle visibility of non-favorited opplegg
+function toggleFavorites() {
+  const button = document.getElementById("toggle-favorites");
+  const oppleggItems = document.querySelectorAll(".list-group-item");
+  
+  // Toggle the button text
+  if (button.innerText === "Vis kun favoritter") {
+    button.innerText = "Vis alle opplegg";
+    oppleggItems.forEach(item => {
+      // If the item is not favorited, hide it
+      if (item.getAttribute("data-is-favorite") === "false") {
+        item.style.display = "none";
+      }
+    });
+  } else {
+    button.innerText = "Vis kun favoritter";
+    oppleggItems.forEach(item => {
+      // Show all items
+      item.style.display = "grid";
+    });
+  }
+}

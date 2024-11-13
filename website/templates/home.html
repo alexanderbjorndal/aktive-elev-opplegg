@@ -41,7 +41,8 @@ block content %}
 
   <div class="child" id="opplegg-details">
     <div class="list-group">
-      <div id="search-container">
+      <div id="search-container" class="flex-container">
+        <button id="toggle-favorites" onclick="toggleFavorites()">Vis kun favoritter</button>
         <input type="text" id="search-bar" placeholder="Fritekst søk" />
       </div>
       <!--Loop through all opplegg-->
@@ -51,6 +52,8 @@ block content %}
         data-traits="{{ ','.join(opplegg.traits|map(attribute='name')) }}"
         data-title="{{ opplegg.name }}"
         data-description="{{ opplegg.data }}"
+        data-is-favorite="{{ 'true' if current_user.is_authenticated and opplegg in current_user.favorites else 'false' }}"
+        id="opplegg-{{ opplegg.id }}"
       >
         <!-- Title -->
         <div class="opplegg-title">{{ opplegg.name }}</div>
@@ -98,7 +101,7 @@ block content %}
         />
 
         <!--Delete button (change to edit later)-->
-        {% if user.role == 'Admin' %}
+        {% if user.role == 'admin' %}
         <button
           type="button"
           class="opplegg-delete"
@@ -136,4 +139,5 @@ block content %}
     };
   });
 </script>
+
 {% endblock %}

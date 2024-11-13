@@ -59,7 +59,7 @@ def add_opplegg():
 @views.route('/delete-opplegg', methods=['POST'])
 @login_required
 def delete_opplegg():
-    if current_user.role != 'Admin':
+    if current_user.role != 'admin':
         abort(403) 
 
     opplegg = json.loads(request.data)
@@ -89,8 +89,43 @@ def toggle_favorite():
     db.session.commit()
     return redirect(url_for('views.home'))
 
-@views.route('/se-opplegg', methods=['GET'])
+@views.route('/se-opplegg', methods=['GET', 'POST'])
 def se_opplegg():
+    if request.method == 'POST':
+        if current_user.role != 'admin':
+            abort(403)
+
+        opplegg_id = request.form.get('opplegg_id')  # Get the opplegg_id from the form
+        opplegg = Opplegg.query.get_or_404(opplegg_id)  # Fetch the existing Opplegg from DB
+        
+        name = request.form.get('opplegg')
+        data = request.form.get('data')
+        marked = []
+        if len(data) < 1:
+            flash('For kort beskrivelse', category='error')
+        else:
+            # Update the existing Opplegg
+            opplegg.name = name
+            opplegg.data = data
+            opplegg.traits.clear()  # Clear existing traits before adding new ones
+            
+            # Add the newly selected traits
+            for mark in request.form.getlist('tags'):
+                if mark:
+                    new_trait = db.session.query(Trait).filter_by(name=mark).first()
+                    if new_trait:
+                        opplegg.traits.append(new_trait)
+
+            # Ensure that at least one trait is selected
+            if not opplegg.traits:
+                flash('Opplegget må klassifiseres med minst en egenskap.', category='error')
+                db.session.rollback()  # Rollback in case of error
+            else:
+                db.session.commit()  # Commit changes to the database
+                flash('Opplegg oppdatert', category='success')
+        
+        return redirect(url_for('views.home'))
+    
     opplegg_id = request.args.get('opplegg_id')  # Get the query parameter
     if not opplegg_id:
         return "Missing opplegg_id", 400  # Handle case where opplegg_id is not provided
@@ -117,6 +152,31 @@ def se_opplegg():
         checked_trait_ids=checked_trait_ids
     )
 
+
+@views.route('/brukere', methods=['GET'])
+@login_required
+def admin_users():
+    # Ensure the current user is an admin
+    if current_user.role != 'admin':
+        abort(403)  # Forbidden access if the user is not an admin
+    
+    # Get all users from the database
+    users = User.query.all()
+
+    # Fetch opplegg and favorites for each user (with relationships)
+    user_data = []
+    for user in users:
+        user_opplegg = user.opplegg  # All opplegg linked to the user
+        user_favorites = user.favorites  # All favorites linked to the user
+        user_data.append({
+            'user': user,
+            'opplegg': user_opplegg,
+            'favorites': user_favorites
+        })
+    
+    return render_template('brukere.html', user=current_user, user_data=user_data)
+
+
 @event.listens_for(User.__table__, 'after_create')
 def create_admin_user(*args, **kwargs):
     admin_user = User.query.filter_by(email=os.environ.get('ADMIN_EMAIL')).first()
@@ -132,7 +192,7 @@ def create_admin_user(*args, **kwargs):
         new_user = User(
             email=admin_email,
             first_name='Alexander Bjørndal',
-            role='Admin', 
+            role='admin', 
             password=generate_password_hash(admin_password, method='pbkdf2:sha256'),
             is_email_confirmed=True
         )

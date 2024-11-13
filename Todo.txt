@@ -1,6 +1,4 @@
 Admin-page:
-- Users
-- Edit
 - Logs?
 
 Main page:
@@ -20,3 +18,9 @@ User pages:
 - See opplegg
 - See favorites
 - See comments
+
+
+Done:
+Admin:
+- Edit
+- Users
