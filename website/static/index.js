@@ -180,7 +180,10 @@ searchBar.addEventListener("keyup", function () {
 });
 
 document.querySelectorAll(".opplegg-delete").forEach((button) => {
-  button.addEventListener("click", function () {
+  button.addEventListener("click", function (event) {
+    event.preventDefault();
+    event.stopPropagation();
+
     const oppleggId = this.getAttribute("data-opplegg-id");
     deleteOpplegg(oppleggId);
   });
@@ -207,4 +210,8 @@ function toggleFavorites() {
       item.style.display = "grid";
     });
   }
+}
+
+function disableSubmitButton() {
+  document.getElementById('submit-button').disabled = true;
 }

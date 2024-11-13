@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, flash, jsonify, redirect,
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from sqlalchemy import event
-from .models import Opplegg, Trait, User
+from .models import Opplegg, Trait, User, Comment
 from . import db
 import json, os
 from collections import defaultdict
@@ -12,19 +12,37 @@ views = Blueprint('views', __name__)
 
 @views.route('/', methods=['GET'])
 def home():
+    # Fetch all opplegg, users, traits, and comments
     opplegg = Opplegg.query.all()
     users = User.query.all()
     traits = Trait.query.all()
     user_list = []
 
+    # Create a list of users for easy lookup
     for u in users:
         user_list.append([u.id, u.first_name])
 
+    # Group traits by klasse (assuming each trait has a 'klasse' attribute)
     klasse_groups = defaultdict(list)
     for trait in traits:
         klasse_groups[trait.klasse].append(trait)
 
-    return render_template("home.html", user=current_user, users=user_list, all_opplegg=opplegg, traits=traits, klasse_groups=klasse_groups)
+    # Create a dictionary of opplegg ids with their respective comment count
+    opplegg_comment_counts = {
+        opplegget.id: Comment.query.filter_by(opplegg_id=opplegget.id).count()
+        for opplegget in opplegg
+    }
+
+    # Return the rendered template with the context
+    return render_template(
+        "home.html",
+        user=current_user,  # Current user
+        users=user_list,     # List of users (ID, first name)
+        all_opplegg=opplegg,  # List of all opplegg
+        traits=traits,       # List of traits
+        klasse_groups=klasse_groups,  # Grouped traits
+        opplegg_comment_counts=opplegg_comment_counts  # Comment counts by opplegg ID
+    )
 
 @views.route('/add-opplegg', methods=['GET', 'POST'])
 @login_required
@@ -66,6 +84,7 @@ def delete_opplegg():
     oppleggId = opplegg['oppleggId']
     opplegg = Opplegg.query.get(oppleggId)
     if opplegg:
+        Comment.query.filter_by(opplegg_id=opplegg.id).delete()
         db.session.delete(opplegg)
         db.session.commit()
     return jsonify({})
@@ -91,13 +110,45 @@ def toggle_favorite():
 
 @views.route('/se-opplegg', methods=['GET', 'POST'])
 def se_opplegg():
-    if request.method == 'POST':
+    # Handle displaying the opplegg and comments
+    opplegg_id = request.args.get('opplegg_id')  # Get the query parameter
+    if not opplegg_id:
+        return "Missing opplegg_id", 400  # Handle case where opplegg_id is not provided
+
+    opplegg = Opplegg.query.get_or_404(opplegg_id)  # Get the opplegg details
+    users = User.query.all()  # Get all users for displaying author info
+    traits = Trait.query.all()  # Get all traits for classifying opplegg
+    comments = Comment.query.filter_by(opplegg_id=opplegg_id).all()  # Get all comments for this opplegg
+
+    # Prepare a list of users to display the user names
+    user_list = []
+    for u in users:
+        user_list.append([u.id, u.first_name])
+
+    # Organize traits by class
+    klasse_groups = defaultdict(list)
+    for trait in traits:
+        klasse_groups[trait.klasse].append(trait)
+
+    checked_trait_ids = {trait.id for trait in opplegg.traits}
+
+    # Handle new comment submission
+    if request.method == 'POST' and 'content' in request.form:
+        # If the "content" field is present, we assume this is a comment submission
+        content = request.form.get('content')
+        if content:
+            new_comment = Comment(content=content, opplegg_id=opplegg_id, user_id=current_user.id)
+            db.session.add(new_comment)
+            db.session.commit()
+            flash('Comment added!', category='success')
+            return redirect(url_for('views.se_opplegg', opplegg_id=opplegg_id))  # Refresh the page
+
+    # Handle form submission to update opplegg
+    if request.method == 'POST' and 'opplegg' in request.form:
+        # If the "opplegg" field is present, we assume this is the form for updating the opplegg
         if current_user.role != 'admin':
             abort(403)
 
-        opplegg_id = request.form.get('opplegg_id')  # Get the opplegg_id from the form
-        opplegg = Opplegg.query.get_or_404(opplegg_id)  # Fetch the existing Opplegg from DB
-        
         name = request.form.get('opplegg')
         data = request.form.get('data')
         marked = []
@@ -125,32 +176,40 @@ def se_opplegg():
                 flash('Opplegg oppdatert', category='success')
         
         return redirect(url_for('views.home'))
-    
-    opplegg_id = request.args.get('opplegg_id')  # Get the query parameter
-    if not opplegg_id:
-        return "Missing opplegg_id", 400  # Handle case where opplegg_id is not provided
 
-    opplegg = Opplegg.query.get_or_404(opplegg_id)
-    users = User.query.all()
-    traits = Trait.query.all()
-    user_list = []
-
-    for u in users:
-        user_list.append([u.id, u.first_name])
-
-    klasse_groups = defaultdict(list)
-    for trait in traits:
-        klasse_groups[trait.klasse].append(trait)
-
-    checked_trait_ids = {trait.id for trait in opplegg.traits}
-
+    # Render the page with opplegg, users, traits, and comments
     return render_template(
         'se_opplegg.html',
         opplegg=opplegg,
         user=current_user,
         klasse_groups=klasse_groups,
-        checked_trait_ids=checked_trait_ids
+        checked_trait_ids=checked_trait_ids,
+        comments=comments,  # Pass comments to the template
+        user_list=user_list
     )
+
+
+@views.route('/delete-comment', methods=['POST'])
+def delete_comment():
+    if current_user.role != 'admin':
+        abort(403)  # Only admins can delete comments
+
+    comment_id = request.form.get('comment_id')  # Get the comment ID from the form
+    opplegg_id = request.form.get('opplegg_id')  # Get the opplegg ID (optional, for redirect)
+
+    # Fetch the comment to be deleted
+    comment = Comment.query.get(comment_id)
+    
+    if comment:
+        # Delete the comment from the database
+        db.session.delete(comment)
+        db.session.commit()
+        flash('Comment deleted', category='success')
+    else:
+        flash('Comment not found', category='error')
+
+    # Redirect back to the opplegg page
+    return redirect(url_for('views.se_opplegg', opplegg_id=opplegg_id))
 
 
 @views.route('/brukere', methods=['GET'])

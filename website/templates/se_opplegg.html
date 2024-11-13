@@ -46,16 +46,97 @@
     </ul>
     {% if user.role == 'admin' %}
     <div align="center">
-        <button type="submit" onsubmit="disableSubmitButton()" class="btn btn-primary" style="margin-top: 2rem">Oppdater opplegg</button>
+        <button type="submit" onsubmit="disableSubmitButton()" class="button-style" style="margin-top: 2rem">Oppdater opplegg</button>
       </div>
         
     {% endif %}
   </form>
-  <script>
-    function disableSubmitButton() {
-        document.getElementById('submit-button').disabled = true;
-    }
+
+<!-- Comment Section -->
+<div class="comments-section">
+  {% if comments %}
+    <div class="comments-list">
+      {% for comment in comments %}
+        <div class="comment-item">
+          <p>
+            <strong>{{ comment.user.first_name }}</strong>
+            <span class="comment-date">{{ comment.created_at.strftime('%d.%m.%y %H:%M') }}</span>
+        </p>
+          <p>{{ comment.content }}</p>
+          {% if user.role == 'admin' %}
+          <!-- Button to delete the comment -->
+          <button
+              type="button"
+              class="comment-delete"
+              data-comment-id="{{ comment.id }}"
+              data-opplegg-id="{{ opplegg.id }}"
+          >
+              <span aria-hidden="true">&times;</span>
+          </button>
+      {% endif %}
+
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p>Ingen kommentarer ennå. Bli den første til å kommentere</p>
+  {% endif %}
+  
+  <!-- Form to add a new comment -->
+  {% if current_user.is_authenticated %}
+    <form method="POST" action="{{ url_for('views.se_opplegg', opplegg_id=opplegg.id) }}">
+      <textarea name="content" rows="4" placeholder="Skriv kommentaren din her" required></textarea>
+      <br>
+      <div align="center">
+      <button type="submit" class="button-style">Lagre kommentar</button>
+    </div>
+    </form>
+  {% else %}
+    <p>Du må være logget inn for å kommentere</p>
+  {% endif %}
+</div>
+
+
+
+</div>
+</div>
+
+<script>
+  // Add event listener to all comment delete buttons
+  document.querySelectorAll('.comment-delete').forEach(button => {
+      button.addEventListener('click', function() {
+          const commentId = button.getAttribute('data-comment-id');
+          const oppleggId = button.getAttribute('data-opplegg-id');
+          
+          // Confirm the deletion action
+          if (confirm('Er du sikker på at du vil slette denne kommentaren?')) {
+              // Create the form to send the POST request to delete the comment
+              const form = document.createElement('form');
+              form.method = 'POST';
+              form.action = '/delete-comment';
+
+              // Add hidden fields for comment_id and opplegg_id
+              const commentIdField = document.createElement('input');
+              commentIdField.type = 'hidden';
+              commentIdField.name = 'comment_id';
+              commentIdField.value = commentId;
+
+              const oppleggIdField = document.createElement('input');
+              oppleggIdField.type = 'hidden';
+              oppleggIdField.name = 'opplegg_id';
+              oppleggIdField.value = oppleggId;
+
+              form.appendChild(commentIdField);
+              form.appendChild(oppleggIdField);
+
+              // Append the form to the body and submit it
+              document.body.appendChild(form);
+              form.submit();
+          }
+      });
+  });
 </script>
-</div>
-</div>
 {% endblock %}
+
+
+

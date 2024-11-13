@@ -429,7 +429,7 @@ li[data-tooltip]:hover::after {
   border-radius: 10px;
 }
 
-#remove-all-filters {
+.button-style {
   background-color: #f0f0f0; /* Light gray for a discrete color */
   color: #333; /* Darker text color for contrast */
   border: 1px solid #ccc; /* Subtle border */
@@ -440,36 +440,27 @@ li[data-tooltip]:hover::after {
   transition: background-color 0.3s, border-color 0.3s; /* Smooth transitions */
 }
 
-#remove-all-filters:hover {
+.button-style:hover {
   background-color: #e0e0e0; /* Slightly darker on hover */
   border-color: #aaa; /* Darker border on hover */
 }
 
-#remove-all-filters:focus {
+.button-style:focus {
   outline: none; /* Remove default outline */
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow on focus */
 }
 
-#toggle-favorites {
-  background-color: #f0f0f0; /* Light gray for a discrete color */
-  color: #333; /* Darker text color for contrast */
-  border: 1px solid #ccc; /* Subtle border */
-  border-radius: 5px; /* Slight rounding for a softer look */
-  padding: 5px 10px; /* Smaller padding for a smaller button */
-  font-size: 14px; /* Adjusted font size */
-  cursor: pointer; /* Pointer cursor on hover */
-  transition: background-color 0.3s, border-color 0.3s; /* Smooth transitions */
-  margin-right: 15px;
-}
 
-#toggle-favorites:hover {
-  background-color: #e0e0e0; /* Slightly darker on hover */
-  border-color: #aaa; /* Darker border on hover */
-}
-
-#toggle-favorites:focus {
-  outline: none; /* Remove default outline */
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow on focus */
+.comment-bubble {
+  display: inline-block;
+  background-color: #494949;
+  color: white;  /* White text */
+  border-radius: 50%; /* Round shape */
+  padding: 0.2em 0.5em; /* Padding for the bubble */
+  font-size: 0.9em; /* Slightly smaller font */
+  text-align: center;
+  vertical-align: middle;
+  margin-left: 5px; /* Optional, to give some spacing from the comment text */
 }
 
 /* Center the button in the flexbox */
@@ -596,9 +587,57 @@ tr {
 
 
 
+.comments-section {
+  margin-top: 50px;
+}
+
+.comments-list {
+  margin-bottom: 20px;
+}
+
+.comment-item {
+  background-color: #eaeef1;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 25px;
+}
+
+.comment-item p {
+  margin: 0;
+}
+
+.comment-item small {
+  color: #888;
+}
+
+form textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  resize: vertical;
+}
+
+form button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+form button:hover {
+  background-color: #0056b3;
+}
 
 
-
+.comment-date {
+  float: right;  /* Align to the right side */
+  font-size: 0.8em;  /* Adjust font size if needed */
+  color: #888;  /* Light grey for the timestamp */
+  margin-left: 10px;  /* Add space between the name and the date */
+}
 
 
 
