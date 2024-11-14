@@ -100,10 +100,6 @@ block content %}
           name="scrollPosition"
           value="0"
         />
-        <!-- Comment Count -->
-        <div class="comment-count">
-          <span class="comment-bubble">{{ opplegg_comment_counts[opplegg.id] }} </span>
-        </div>
 
         <input type="hidden" id="scrollPosition" name="scrollPosition" value="0" />
 
@@ -121,11 +117,29 @@ block content %}
         <!--Description-->
         <div class="opplegg-text" readonly>{{ opplegg.data }}</div>
 
-        <!--Date and user-->
+        <!-- Date, user, and favorite count with heart icon -->
         <div class="opplegg-date-user">
-          Lagt til {{ opplegg.date.strftime("%d.%m.%y") }} av: {% for u in users
-          %} {% if u[0] == opplegg.user_id %} {{u[1]}} {% endif %} {% endfor %}
+          <!-- Heart and favorite count -->
+          <div class="favorite-count">
+            <i class="fas fa-heart"></i> <!-- Font Awesome heart icon -->
+            <span class="favorite-number">{{ opplegg_favorites_counts[opplegg.id] }}</span>
+          </div>
+
+
+          <!-- Comment count bubble -->
+          <div class="comment-count">
+            <span class="comment-bubble">{{ opplegg_comment_counts[opplegg.id] }}</span>
+          </div>
+
+          <!-- Display date and user -->
+          Lagt til {{ opplegg.date.strftime("%d.%m.%y") }} av:
+          {% for u in users %}
+            {% if u[0] == opplegg.user_id %}
+              {{ u[1] }}
+            {% endif %}
+          {% endfor %}
         </div>
+
       </a>
       {% endfor %}
     </div>

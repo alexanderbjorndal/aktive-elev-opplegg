@@ -33,6 +33,12 @@ def home():
         for opplegget in opplegg
     }
 
+    # Create a dictionary of opplegg ids with the count of users who favorited it
+    opplegg_favorites_counts = {
+        opplegget.id: len([user for user in users if opplegget in user.favorites])
+        for opplegget in opplegg
+    }
+
     # Return the rendered template with the context
     return render_template(
         "home.html",
@@ -41,7 +47,8 @@ def home():
         all_opplegg=opplegg,  # List of all opplegg
         traits=traits,       # List of traits
         klasse_groups=klasse_groups,  # Grouped traits
-        opplegg_comment_counts=opplegg_comment_counts  # Comment counts by opplegg ID
+        opplegg_comment_counts=opplegg_comment_counts,  # Comment counts by opplegg ID
+        opplegg_favorites_counts=opplegg_favorites_counts  # Favorites counts by opplegg ID
     )
 
 @views.route('/add-opplegg', methods=['GET', 'POST'])

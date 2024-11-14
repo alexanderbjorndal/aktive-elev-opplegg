@@ -216,7 +216,6 @@ ul.ks-cboxtags li input[type="checkbox"]:checked + label::before {
   max-height: 100px; /* Limit the height to avoid overlap */
   max-width: 90vw;
   flex-shrink: 0; /* Prevent shrinking */
-  
   display: flex;  /* Add flexbox layout */
   flex-direction: row;  /* Align children horizontally */
   flex-wrap: wrap;  /* Allow wrapping if necessary */
@@ -326,7 +325,10 @@ ul.ks-cboxtags li input[type="checkbox"]:checked + label::before {
 }
 
 .opplegg-date-user {
+  display: flex;
   background: #eaeef1;
+  align-items: center;
+  gap: 10px;
   justify-self: end;
   align-self: end;
   margin-top: 2px;
@@ -450,19 +452,6 @@ li[data-tooltip]:hover::after {
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow on focus */
 }
 
-
-.comment-bubble {
-  display: inline-block;
-  background-color: #494949;
-  color: white;  /* White text */
-  border-radius: 50%; /* Round shape */
-  padding: 0.2em 0.5em; /* Padding for the bubble */
-  font-size: 0.9em; /* Slightly smaller font */
-  text-align: center;
-  vertical-align: middle;
-  margin-left: 5px; /* Optional, to give some spacing from the comment text */
-}
-
 /* Center the button in the flexbox */
 .flex-container {
   display: flex;
@@ -546,7 +535,6 @@ a.list-group-item:hover {
   cursor: pointer;       /* Change cursor on hover */
   border: 2px solid #a0a9a0;
 }
-
 
 
 /* Ensure the table width spans evenly */
@@ -640,6 +628,53 @@ form button:hover {
 }
 
 
+.comment-bubble {
+  position: relative;         /* To position the triangle relative to the bubble */
+  background-color: #b8b8b8;  /* Background color for the bubble */
+  padding: 3px 8px;          /* Padding for the text inside the bubble */
+  border-radius: 25px;        /* Rounded corners for the bubble */
+  display: inline-block;      /* To make the bubble wrap around the text */
+  font-weight: bold;          /* Optional: make the text bold */
+  font-size: 0.8em;           /* Adjust font size to match the heart count */
+}
+
+.comment-bubble:after {
+  content: '';                /* Necessary to create the pseudo-element */
+  position: absolute;         /* Position the triangle relative to the bubble */
+  bottom: -6px;               /* Position the triangle slightly below the bubble */
+  left: 10%;                   /* Align the triangle to the right edge of the bubble */
+  width: 0;                   /* Set width and height to create the triangle */
+  height: 0;
+  border-top: 8px solid transparent;   /* Top part of the triangle (transparent) */
+  border-left: 6px solid #b8b8b8;      /* Left part of the triangle (color of the bubble) */
+  border-bottom: 8px solid transparent;/* Bottom part of the triangle (transparent) */
+  border-right: 4px solid transparent; /* Right part of the triangle (transparent) */
+}
+
+.favorite-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #ff0000;  /* Heart color */
+  font-size: 1em; /* Adjust size of the count text */
+  position: relative; /* Needed to position the number inside the heart */
+}
+
+.favorite-count i {
+  font-size: 22px; /* Size of the heart icon */
+  position: relative; /* For positioning the number inside the heart */
+  top: 2px; /* Move the heart down by 2px */
+}
+
+.favorite-count .favorite-number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the number */
+  font-size: 0.8em;  /* Adjust font size if needed */
+  color: black; /* Color of the number */
+  font-weight: bold; /* Make the number stand out */
+}
 
 
 
