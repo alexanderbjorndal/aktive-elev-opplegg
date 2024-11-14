@@ -1,11 +1,6 @@
 Admin-page:
 - Logs?
 
-Main page:
-- Number of favorites
-- Number of comments
-- Show only favorites
-
 Se opplegg:
 - Comments
 - Number of likes
@@ -24,3 +19,8 @@ Done:
 Admin:
 - Edit
 - Users
+
+Main page:
+- Number of favorites
+- Number of comments
+- Show only favorites

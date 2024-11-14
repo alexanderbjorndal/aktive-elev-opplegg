@@ -420,6 +420,7 @@ li[data-tooltip]:hover::after {
   justify-content: space-between; /* Makes sure the search bar and button are spaced evenly */
   align-items: center; /* Aligns them vertically */
   margin-bottom: 15px;
+  gap: 10px;
 }
 
 
@@ -655,7 +656,7 @@ form button:hover {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: #ff0000;  /* Heart color */
+  color: #b8b8b8;  /* Heart color */
   font-size: 1em; /* Adjust size of the count text */
   position: relative; /* Needed to position the number inside the heart */
 }
