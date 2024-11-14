@@ -8,7 +8,6 @@ import json, os
 from collections import defaultdict
 
 views = Blueprint('views', __name__)
-print(Comment.query.first())
 
 @views.route('/', methods=['GET'])
 def home():
