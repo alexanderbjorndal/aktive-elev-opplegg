@@ -14,7 +14,8 @@
                 <th>Epost</th>
                 <th>Navn</th>
                 <th>Opplegg</th>
-                <th>Favorites</th>
+                <th>Favoritter</th>
+                <th>Kommentarer</th>
             </tr>
         </thead>
         <tbody>
@@ -53,6 +54,20 @@
                             Ingen favoritter
                         {% endif %}
                     </td>
+                    <td>
+                    {% if data.user.comments %}
+                        <ul class="list-unstyled">
+                            {% for comment in data.user.comments %}
+                                <li>
+                                    {{ comment.content|truncate(50) }} <!-- Display truncated comment content -->
+                                    <a href="{{ url_for('views.se_opplegg', opplegg_id=comment.opplegg.id) }}"> (View Opplegg) </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        Ingen kommentarer
+                    {% endif %}
+                </td>
                 </tr>
             {% endfor %}
         </tbody>
