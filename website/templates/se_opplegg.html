@@ -32,7 +32,7 @@
                 <div class="container">
                     <ul class="ks-cboxtags">
                     {% for trait in traits %}
-                        <li>
+                        <li data-tooltip="{{ trait.forklaring }}">
                             <input type="checkbox" name="tags" id="checkbox{{ trait.id }}" value="{{ trait.name }}"
                                    {% if trait in opplegg.traits %} checked {% endif %}
                                    {% if user.role != 'admin' %} disabled {% endif %}>
