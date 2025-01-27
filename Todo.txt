@@ -2,8 +2,6 @@ Admin-page:
 - Logs?
 
 Se opplegg:
-- Comments
-- Number of likes
 - Similar opplegg
 
 Add opplegg:
@@ -15,6 +13,7 @@ User pages:
 - See comments
 
 
+
 Done:
 Admin:
 - Edit
@@ -24,3 +23,7 @@ Main page:
 - Number of favorites
 - Number of comments
 - Show only favorites
+
+Se opplegg:
+- Comments
+- Number of likes

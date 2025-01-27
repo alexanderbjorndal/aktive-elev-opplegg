@@ -113,6 +113,32 @@ textarea {
   display: inline-block; /* labels on the same line */
 }
 
+.three-boxes-container {
+  display: flex;
+  justify-content: space-between; /* Adjusts spacing between boxes */
+  gap: 1rem; /* Adds spacing between boxes */
+  margin-top: 2rem; /* Adds some space above the boxes */
+}
+
+.box {
+  flex: 1; /* Ensures equal width for all boxes */
+  max-width: 30%; /* Optional: sets a max width */
+  padding: 1rem; /* Adds padding inside the boxes */
+  background-color: #eaeef1; /* Light gray background */
+  border: 1px solid #cecece; /* Subtle border */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a shadow for depth */
+  text-align: center; /* Centers text */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.box:hover {
+  transform: translateY(-3px); /* Slight lift on hover */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
+}
+
+
+
 /* Add Media Queries for Small Screens */
 @media only screen and (max-width: 768px) {
 #centerer {

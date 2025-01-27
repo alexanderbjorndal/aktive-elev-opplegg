@@ -126,21 +126,30 @@ allCheckboxes.forEach((checkbox) => {
   }
 });
 
-document.getElementById("search-bar").addEventListener("keyup", function () {
-  const query = this.value.toLowerCase();
-  const items = document.querySelectorAll(".list-group-item");
-
-  items.forEach((item) => {
-    const title = item.getAttribute("data-title").toLowerCase();
-    const description = item.getAttribute("data-description").toLowerCase();
-
-    // Check if the query matches the title or description
-    if (title.includes(query) || description.includes(query)) {
-      item.style.display = ""; // Show item
-    } else {
-      item.style.display = "none"; // Hide item
+function addEventListenerIfExists(selector, event, handler) {
+    const element = document.getElementById(selector);
+    if (element) {
+        element.addEventListener(event, handler);
     }
-  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    addEventListenerIfExists("search-bar", "keyup", function () {
+        const query = this.value.toLowerCase();
+        const items = document.querySelectorAll(".list-group-item");
+
+        items.forEach((item) => {
+            const title = item.getAttribute("data-title").toLowerCase();
+            const description = item.getAttribute("data-description").toLowerCase();
+
+            // Sjekk om søkespørsmålet matcher tittelen eller beskrivelsen  
+            if (title.includes(query) || description.includes(query)) {
+                item.style.display = ""; // Vis element  
+            } else {
+                item.style.display = "none"; // Skjul element  
+            }
+        });
+    });
 });
 
 // Attach event listeners to checkboxes
@@ -164,54 +173,118 @@ document.querySelectorAll('input[name="tag"]').forEach((checkbox) => {
 
 let debounceTimer;
 const searchBar = document.getElementById("search-bar");
-searchBar.addEventListener("keyup", function () {
-  clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(() => {
-    const query = this.value.toLowerCase();
-    const items = document.querySelectorAll(".list-group-item");
+if (searchBar) {
+    searchBar.addEventListener("keyup", function () {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            const query = this.value.toLowerCase();
+            const items = document.querySelectorAll(".list-group-item");
 
-    items.forEach((item) => {
-      const title = item.getAttribute("data-title").toLowerCase();
-      const description = item.getAttribute("data-description").toLowerCase();
-      item.style.display =
-        title.includes(query) || description.includes(query) ? "" : "none";
-    });
-  }, 300);
+            items.forEach((item) => {
+                const title = item.getAttribute("data-title").toLowerCase();
+                const description = item.getAttribute("data-description").toLowerCase();
+                item.style.display =
+                    title.includes(query) || description.includes(query) ? "" : "none";
+            });
+        }, 300);
 });
 
 document.querySelectorAll(".opplegg-delete").forEach((button) => {
-  button.addEventListener("click", function (event) {
-    event.preventDefault();
-    event.stopPropagation();
+    button.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
 
-    const oppleggId = this.getAttribute("data-opplegg-id");
-    deleteOpplegg(oppleggId);
-  });
+        const oppleggId = this.getAttribute("data-opplegg-id");
+        deleteOpplegg(oppleggId);
+    });
 });
 
-// Function to toggle visibility of non-favorited opplegg
+// Function to toggle visibility of non-favorited opplegg  
 function toggleFavorites() {
-  const button = document.getElementById("toggle-favorites");
-  const oppleggItems = document.querySelectorAll(".list-group-item");
-  
-  // Toggle the button text
-  if (button.innerText === "Vis kun favoritter") {
-    button.innerText = "Vis alle opplegg";
-    oppleggItems.forEach(item => {
-      // If the item is not favorited, hide it
-      if (item.getAttribute("data-is-favorite") === "false") {
-        item.style.display = "none";
-      }
-    });
-  } else {
-    button.innerText = "Vis kun favoritter";
-    oppleggItems.forEach(item => {
-      // Show all items
-      item.style.display = "grid";
-    });
-  }
+    const button = document.getElementById("toggle-favorites");
+    const oppleggItems = document.querySelectorAll(".list-group-item");
+
+    if (button) {
+        // Toggle the button text  
+        if (button.innerText === "Vis kun favoritter") {
+            button.innerText = "Vis alle opplegg";
+            oppleggItems.forEach(item => {
+                if (item.getAttribute("data-is-favorite") === "false") {
+                    item.style.display = "none";
+                }
+            });
+        } else {
+            button.innerText = "Vis kun favoritter";
+            oppleggItems.forEach(item => {
+                item.style.display = "grid";
+            });
+        }
+    }
 }
 
 function disableSubmitButton() {
-  document.getElementById('submit-button').disabled = true;
+    const submitButton = document.getElementById('submit-button');
+    if (submitButton) {
+        submitButton.disabled = true;
+    }
 }
+
+async function fetchComparison(oppleggName) {
+    console.log(`Fetching comparison for: ${oppleggName}`);
+    const response = await fetch(`/compare?opplegg_name=${encodeURIComponent(oppleggName)}`);
+    if (!response.ok) {
+        console.error("Failed to fetch comparison data");
+        const resultsContainer = document.getElementById("resultsContainer");
+        if (resultsContainer) {
+            resultsContainer.innerText = "Error fetching data.";
+        }
+        return [];
+    }
+    const data = await response.json();
+    return data;
+}
+
+function displayResults(results) {
+    const resultsContainer = document.getElementById("resultsContainer");
+    if (resultsContainer) {
+        resultsContainer.innerHTML = ""; // Clear previous results
+
+        if (results.error) {
+            resultsContainer.innerText = results.error;
+            return;
+        }
+
+        if (results.length === 0) {
+            resultsContainer.innerText = "No similar opplegg found.";
+            return;
+        }
+
+        results.forEach(result => {
+            const resultDiv = document.createElement("div");
+            resultDiv.className = "result";
+            resultDiv.innerHTML = `
+                <h3>${result.name}</h3>
+                <p>Similarity Score: ${(result.similarity_score * 100).toFixed(2)}%</p>
+                <p>Common Traits: ${result.common_traits.join(", ")}</p>
+            `;
+            resultsContainer.appendChild(resultDiv);
+        });
+    }
+}
+
+const compareButton = document.getElementById("compareButton");
+const oppleggNameInput = document.getElementById("oppleggNameInput");
+
+if (compareButton && oppleggNameInput) {
+    compareButton.addEventListener("click", async () => {
+        const oppleggName = oppleggNameInput.value.trim();
+        if (!oppleggName) {
+            alert("Please enter an opplegg name!");
+            return;
+        }
+
+        const results = await fetchComparison(oppleggName);
+        displayResults(results);
+    });
+}
+};

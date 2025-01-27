@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from sqlalchemy import event
 from .models import Opplegg, Trait, User, Comment
+from .utils import compare_opplegg
 from . import db
 import json, os
 from collections import defaultdict
@@ -194,7 +195,6 @@ def se_opplegg():
         user_list=user_list
     )
 
-
 @views.route('/delete-comment', methods=['POST'])
 def delete_comment():
     if current_user.role != 'admin':
@@ -216,7 +216,6 @@ def delete_comment():
 
     # Redirect back to the opplegg page
     return redirect(url_for('views.se_opplegg', opplegg_id=opplegg_id))
-
 
 @views.route('/brukere', methods=['GET'])
 @login_required
@@ -241,6 +240,14 @@ def admin_users():
     
     return render_template('brukere.html', user=current_user, user_data=user_data)
 
+@views.route('/compare', methods=['GET'])
+def compare():
+    opplegg_name = request.args.get('opplegg_name')
+    if not opplegg_name:
+        return jsonify({"error": "Missing 'opplegg_name' parameter"}), 400
+
+    results = compare_opplegg(opplegg_name)
+    return jsonify(results)
 
 @event.listens_for(User.__table__, 'after_create')
 def create_admin_user(*args, **kwargs):
