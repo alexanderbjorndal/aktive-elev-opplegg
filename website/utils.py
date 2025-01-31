@@ -6,6 +6,37 @@ from website.models import Opplegg, Trait, OppleggSimilarity
 import nltk
 from nltk.corpus import stopwords
 
+def update_opplegg_similarity(new_opplegg):
+    # Get all existing Opplegg in the database
+    opplegg_list = Opplegg.query.all()
+
+    for opplegg in opplegg_list:
+        # Skip the comparison if it's the same Opplegg
+        if opplegg.id == new_opplegg.id:
+            continue
+
+        # Check if the similarity entry already exists
+        existing_similarity = OppleggSimilarity.query.filter(
+            (OppleggSimilarity.opplegg1_id == opplegg.id) & 
+            (OppleggSimilarity.opplegg2_id == new_opplegg.id)
+        ).first()
+
+        if existing_similarity is None:  # No existing entry, so we calculate and insert
+            similarity_score = compare_opplegg(opplegg.id, new_opplegg.id)
+
+            # Only insert if similarity score is valid
+            if similarity_score is not None:
+                new_similarity = OppleggSimilarity(
+                    opplegg1_id=opplegg.id,
+                    opplegg2_id=new_opplegg.id,
+                    similarity_score=similarity_score
+                )
+                db.session.add(new_similarity)
+
+    # Commit the changes to the database
+    db.session.commit()
+    print(f"Similarity scores updated for {new_opplegg.name}")
+
 # Make sure to download the stopwords first if you haven't already
 nltk.download('stopwords')
 

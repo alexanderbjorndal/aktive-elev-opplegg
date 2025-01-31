@@ -77,9 +77,16 @@ def add_opplegg():
                 raise ValueError("Opplegget må klassifiseres med minst en egenskap.")
             else:
                 db.session.commit()
-            flash('Opplegg lagt til', category='success')
+                flash('Opplegg lagt til', category='success')
+
+                # Update the similarity for the new opplegg
+                from website.utils import update_opplegg_similarity
+                update_opplegg_similarity(new_name)
+
         return redirect(url_for('views.home'))
+
     return render_template("add_opplegg.html", user=current_user, klasse_groups=klasse_groups)
+
 
 @views.route('/delete-opplegg', methods=['POST'])
 @login_required
