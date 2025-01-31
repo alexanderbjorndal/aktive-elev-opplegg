@@ -174,117 +174,126 @@ document.querySelectorAll('input[name="tag"]').forEach((checkbox) => {
 let debounceTimer;
 const searchBar = document.getElementById("search-bar");
 if (searchBar) {
-    searchBar.addEventListener("keyup", function () {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-            const query = this.value.toLowerCase();
-            const items = document.querySelectorAll(".list-group-item");
+  searchBar.addEventListener("keyup", function () {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      const query = this.value.toLowerCase();
+      const items = document.querySelectorAll(".list-group-item");
 
-            items.forEach((item) => {
-                const title = item.getAttribute("data-title").toLowerCase();
-                const description = item.getAttribute("data-description").toLowerCase();
-                item.style.display =
-                    title.includes(query) || description.includes(query) ? "" : "none";
-            });
-        }, 300);
-});
+      items.forEach((item) => {
+        const title = item.getAttribute("data-title").toLowerCase();
+        const description = item.getAttribute("data-description").toLowerCase();
+        item.style.display =
+          title.includes(query) || description.includes(query) ? "" : "none";
+      });
+    }, 300);
+  });
 
-document.querySelectorAll(".opplegg-delete").forEach((button) => {
+  document.querySelectorAll(".opplegg-delete").forEach((button) => {
     button.addEventListener("click", function (event) {
-        event.preventDefault();
-        event.stopPropagation();
+      event.preventDefault();
+      event.stopPropagation();
 
-        const oppleggId = this.getAttribute("data-opplegg-id");
-        deleteOpplegg(oppleggId);
+      const oppleggId = this.getAttribute("data-opplegg-id");
+      deleteOpplegg(oppleggId);
     });
-});
+  });
 
-// Function to toggle visibility of non-favorited opplegg  
-function toggleFavorites() {
+  // Function to toggle visibility of non-favorited opplegg  
+  function toggleFavorites() {
     const button = document.getElementById("toggle-favorites");
     const oppleggItems = document.querySelectorAll(".list-group-item");
 
     if (button) {
-        // Toggle the button text  
-        if (button.innerText === "Vis kun favoritter") {
-            button.innerText = "Vis alle opplegg";
-            oppleggItems.forEach(item => {
-                if (item.getAttribute("data-is-favorite") === "false") {
-                    item.style.display = "none";
-                }
-            });
-        } else {
-            button.innerText = "Vis kun favoritter";
-            oppleggItems.forEach(item => {
-                item.style.display = "grid";
-            });
-        }
+      // Toggle the button text  
+      if (button.innerText === "Vis kun favoritter") {
+        button.innerText = "Vis alle opplegg";
+        oppleggItems.forEach(item => {
+          if (item.getAttribute("data-is-favorite") === "false") {
+            item.style.display = "none";
+          }
+        });
+      } else {
+        button.innerText = "Vis kun favoritter";
+        oppleggItems.forEach(item => {
+          item.style.display = "grid";
+        });
+      }
     }
-}
+  }
 
-function disableSubmitButton() {
+  function disableSubmitButton() {
     const submitButton = document.getElementById('submit-button');
     if (submitButton) {
-        submitButton.disabled = true;
+      submitButton.disabled = true;
     }
-}
+  }
 
+  document.addEventListener("DOMContentLoaded", async () => {
+    const oppleggNameInput = document.getElementById("oppleggNameInput");
+
+    // Sjekk om oppleggNameInput eksisterer og har en verdi  
+    if (oppleggNameInput) {
+      const oppleggName = oppleggNameInput.value.trim();
+      if (oppleggName) {
+        const results = await fetchComparison(oppleggName);
+        displayResults(results);
+      } else {
+        // Hvis oppleggNameInput er tom, kan du sette et standard oppleggnavn  
+        const defaultOppleggName = "Forrest Gump"; // Endre dette til ønsket standard opplegg  
+        const results = await fetchComparison(defaultOppleggName);
+        displayResults(results);
+      }
+    }
+  });
+
+  // Fetch comparison function  
 async function fetchComparison(oppleggName) {
     console.log(`Fetching comparison for: ${oppleggName}`);
     const response = await fetch(`/compare?opplegg_name=${encodeURIComponent(oppleggName)}`);
     if (!response.ok) {
         console.error("Failed to fetch comparison data");
-        const resultsContainer = document.getElementById("resultsContainer");
-        if (resultsContainer) {
-            resultsContainer.innerText = "Error fetching data.";
-        }
         return [];
     }
     const data = await response.json();
     return data;
 }
 
+// Display results function  
 function displayResults(results) {
-    const resultsContainer = document.getElementById("resultsContainer");
-    if (resultsContainer) {
-        resultsContainer.innerHTML = ""; // Clear previous results
+    const opplegg1Box = document.getElementById("opplegg1-title");
+    const opplegg1Description = document.getElementById("opplegg1-description");
+    const opplegg2Box = document.getElementById("opplegg2-title");
+    const opplegg2Description = document.getElementById("opplegg2-description");
+    const opplegg3Box = document.getElementById("opplegg3-title");
+    const opplegg3Description = document.getElementById("opplegg3-description");
 
-        if (results.error) {
-            resultsContainer.innerText = results.error;
-            return;
-        }
+    // Clear previous results
+    opplegg1Box.innerHTML = '';
+    opplegg1Description.innerHTML = '';
+    opplegg2Box.innerHTML = '';
+    opplegg2Description.innerHTML = '';
+    opplegg3Box.innerHTML = '';
+    opplegg3Description.innerHTML = '';
 
-        if (results.length === 0) {
-            resultsContainer.innerText = "No similar opplegg found.";
-            return;
-        }
+    // If no results, show a message
+    if (results.length === 0) {
+        opplegg1Box.innerText = "Ingen lignende opplegg funnet.";
+        return;
+    }
 
-        results.forEach(result => {
-            const resultDiv = document.createElement("div");
-            resultDiv.className = "result";
-            resultDiv.innerHTML = `
-                <h3>${result.name}</h3>
-                <p>Similarity Score: ${(result.similarity_score * 100).toFixed(2)}%</p>
-                <p>Common Traits: ${result.common_traits.join(", ")}</p>
-            `;
-            resultsContainer.appendChild(resultDiv);
-        });
+    // Display results in the boxes
+    if (results[0]) {
+        opplegg1Box.innerText = results[0].name;
+        opplegg1Description.innerText = `Similarity: ${(results[0].similarity_score * 100).toFixed(2)}%`;
+    }
+    if (results[1]) {
+        opplegg2Box.innerText = results[1].name;
+        opplegg2Description.innerText = `Similarity: ${(results[1].similarity_score * 100).toFixed(2)}%`;
+    }
+    if (results[2]) {
+        opplegg3Box.innerText = results[2].name;
+        opplegg3Description.innerText = `Similarity: ${(results[2].similarity_score * 100).toFixed(2)}%`;
     }
 }
-
-const compareButton = document.getElementById("compareButton");
-const oppleggNameInput = document.getElementById("oppleggNameInput");
-
-if (compareButton && oppleggNameInput) {
-    compareButton.addEventListener("click", async () => {
-        const oppleggName = oppleggNameInput.value.trim();
-        if (!oppleggName) {
-            alert("Please enter an opplegg name!");
-            return;
-        }
-
-        const results = await fetchComparison(oppleggName);
-        displayResults(results);
-    });
 }
-};

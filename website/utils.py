@@ -1,44 +1,78 @@
-from .models import Opplegg, Trait, db  
-from sqlalchemy.orm import joinedload
+# website/utils.py
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from website import db
+from website.models import Opplegg, Trait, OppleggSimilarity
 
-def compare_opplegg(opplegg_name):
-    """
-    Sammenligner opplegget med andre opplegg basert på traits.
+# Function to calculate text similarity using TF-IDF
+def get_text_similarity(data1, data2):
+    vectorizer = TfidfVectorizer(stop_words='english')
+    tfidf_matrix = vectorizer.fit_transform([data1, data2])
+    similarity = cosine_similarity(tfidf_matrix[0:1], tfidf_matrix[1:2])
+    return similarity[0][0]
 
-    Args:
-        opplegg_name (str): Navnet på opplegget som skal sammenlignes.
+def get_trait_similarity(opplegg1, opplegg2):
+    # Get all the traits of both opplegg
+    traits1 = {trait.name for trait in opplegg1.traits}
+    traits2 = {trait.name for trait in opplegg2.traits}
+    
+    # Calculate trait similarity
+    common_traits = list(traits1.intersection(traits2))  # Now returning the actual common traits list
+    only_in_1 = traits1.difference(traits2)
+    only_in_2 = traits2.difference(traits1)
+    
+    trait_similarity = len(common_traits) + (1 if len(only_in_1) == 0 and len(only_in_2) == 0 else 0)
+    trait_score = trait_similarity / (len(traits1) + len(traits2) - len(common_traits))
+    
+    return common_traits  # Return the list of common traits
 
-    Returns:
-        list: En liste med opplegg som er sammenlignet, inkludert likhetsscore og felles traits.
-    """
-    # Hent det nåværende opplegget  
-    current_opplegg = Opplegg.query.filter_by(name=opplegg_name).first()
-    if not current_opplegg:
-        return {"error": f"Opplegg '{opplegg_name}' not found"}, 404
 
-    current_traits = set(trait.id for trait in current_opplegg.traits)
+def compare_opplegg(opplegg1_id, opplegg2_id):
+    # Get the Opplegg objects
+    opplegg1 = Opplegg.query.get(opplegg1_id)
+    opplegg2 = Opplegg.query.get(opplegg2_id)
+    
+    if not opplegg1 or not opplegg2:
+        return None  # Either opplegg does not exist
+    
+    # Calculate text similarity
+    text_similarity = get_text_similarity(opplegg1.data, opplegg2.data)
+    
+    # Calculate trait similarity
+    trait_similarity = get_trait_similarity(opplegg1, opplegg2)
+    
+    # Combine the two scores with weights
+    final_similarity = 0.4 * text_similarity + 0.6 * trait_similarity
+    
+    return final_similarity
 
-    # Hent alle andre opplegg med traits  
-    all_opplegg = Opplegg.query.options(joinedload(Opplegg.traits)).all()
-    comparison_results = []
+def get_similar_opplegg(opplegg_id):
+    # Get the Opplegg object corresponding to the given opplegg_id
+    opplegg = Opplegg.query.get(opplegg_id)
 
-    for opp in all_opplegg:
-        if opp.id == current_opplegg.id:
-            continue  # Hoppe over seg selv
+    if not opplegg:
+        return None  # If the opplegg doesn't exist
 
-        opp_traits = set(trait.id for trait in opp.traits)
-        similarity = len(current_traits & opp_traits)  # Felles traits  
-        total_traits = len(current_traits | opp_traits)  # Totalt traits  
-        similarity_score = similarity / total_traits if total_traits > 0 else 0
+    similarities = OppleggSimilarity.query.filter(
+        (OppleggSimilarity.opplegg1_id == opplegg_id) |
+        (OppleggSimilarity.opplegg2_id == opplegg_id)
+    ).order_by(OppleggSimilarity.similarity_score.desc()).limit(3).all()
 
-        comparison_results.append({
-            "name": opp.name,
-            "similarity_score": similarity_score,
-            "common_traits": list(current_traits & opp_traits),
-            "date": opp.date,  # Ekstra informasjon  
-            "comments_count": len(opp.comments)  # Antall kommentarer  
-        })
+    similar_opplegg = []
+    for similarity in similarities:
+        # Get the other Opplegg object based on which opplegg_id is the current one
+        other_opplegg_id = similarity.opplegg2_id if similarity.opplegg1_id == opplegg_id else similarity.opplegg1_id
+        other_opplegg = Opplegg.query.get(other_opplegg_id)
+        
+        if other_opplegg:
+            # Get common traits for the two Opplegg
+            common_traits = get_trait_similarity(opplegg, other_opplegg)  # Pass the correct opplegg
 
-    # Sorter etter likhetsscore (høyest først)
-    comparison_results.sort(key=lambda x: x["similarity_score"], reverse=True)
-    return comparison_results
+            similar_opplegg.append({
+                "name": other_opplegg.name,
+                "similarity_score": similarity.similarity_score,
+                "common_traits": common_traits,  # Dynamically filled with real common traits
+            })
+
+    return similar_opplegg
+

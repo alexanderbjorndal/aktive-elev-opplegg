@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from sqlalchemy import event
 from .models import Opplegg, Trait, User, Comment
-from .utils import compare_opplegg
+from .utils import get_similar_opplegg
 from . import db
 import json, os
 from collections import defaultdict
@@ -241,13 +241,19 @@ def admin_users():
     return render_template('brukere.html', user=current_user, user_data=user_data)
 
 @views.route('/compare', methods=['GET'])
-def compare():
+def compare_opplegg():
     opplegg_name = request.args.get('opplegg_name')
-    if not opplegg_name:
-        return jsonify({"error": "Missing 'opplegg_name' parameter"}), 400
+    
+    # Query the Opplegg table for the opplegg based on the name
+    opplegg = Opplegg.query.filter_by(name=opplegg_name).first()
 
-    results = compare_opplegg(opplegg_name)
-    return jsonify(results)
+    if not opplegg:
+        return jsonify({"error": "Opplegg not found"}), 404
+
+    # Call the utility function to get similar opplegg
+    similar_opplegg = get_similar_opplegg(opplegg.id)
+
+    return jsonify(similar_opplegg)
 
 @event.listens_for(User.__table__, 'after_create')
 def create_admin_user(*args, **kwargs):

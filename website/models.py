@@ -62,3 +62,13 @@ class Comment(db.Model):
 
     def __repr__(self):
         return f'<Comment {self.id}>'
+    
+class OppleggSimilarity(db.Model):
+    __tablename__ = 'opplegg_similarity'
+    id = db.Column(db.Integer, primary_key=True)
+    opplegg1_id = db.Column(db.Integer, db.ForeignKey('opplegg.id'), nullable=False)
+    opplegg2_id = db.Column(db.Integer, db.ForeignKey('opplegg.id'), nullable=False)
+    similarity_score = db.Column(db.Float, nullable=False)  # Percentage similarity
+
+    opplegg1 = db.relationship('Opplegg', foreign_keys=[opplegg1_id])
+    opplegg2 = db.relationship('Opplegg', foreign_keys=[opplegg2_id])
