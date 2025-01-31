@@ -144,8 +144,6 @@ a {
 }
 
 
-
-
 /* Add Media Queries for Small Screens */
 @media only screen and (max-width: 768px) {
 #centerer {
