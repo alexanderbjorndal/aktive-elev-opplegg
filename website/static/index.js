@@ -229,38 +229,38 @@ if (searchBar) {
     }
   }
 
-  document.addEventListener("DOMContentLoaded", async () => {
-    const oppleggNameInput = document.getElementById("oppleggNameInput");
+  // This function will get the opplegg_id from the URL
+  function getOppleggIdFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('opplegg_id');
+  }
 
-    // Sjekk om oppleggNameInput eksisterer og har en verdi  
-    if (oppleggNameInput) {
-      const oppleggName = oppleggNameInput.value.trim();
-      if (oppleggName) {
-        const results = await fetchComparison(oppleggName);
-        displayResults(results);
-      } else {
-        // Hvis oppleggNameInput er tom, kan du sette et standard oppleggnavn  
-        const defaultOppleggName = "Forrest Gump"; // Endre dette til ønsket standard opplegg  
-        const results = await fetchComparison(defaultOppleggName);
-        displayResults(results);
-      }
+  document.addEventListener("DOMContentLoaded", async () => {
+    // Get opplegg_id from the current URL query string (as you are showing a single opplegg page)
+    const urlParams = new URLSearchParams(window.location.search);
+    const oppleggId = urlParams.get("opplegg_id");
+
+    if (oppleggId) {
+      // Fetch comparison data for the selected opplegg
+      const results = await fetchComparison(oppleggId);
+      displayResults(results);
     }
   });
 
   // Fetch comparison function  
-async function fetchComparison(oppleggName) {
-    console.log(`Fetching comparison for: ${oppleggName}`);
-    const response = await fetch(`/compare?opplegg_name=${encodeURIComponent(oppleggName)}`);
+  async function fetchComparison(oppleggId) {
+    console.log(`Fetching comparison for opplegg ID: ${oppleggId}`);
+    const response = await fetch(`/compare?opplegg_id=${encodeURIComponent(oppleggId)}`);
     if (!response.ok) {
-        console.error("Failed to fetch comparison data");
-        return [];
+      console.error("Failed to fetch comparison data");
+      return [];
     }
     const data = await response.json();
     return data;
-}
+  }
 
-// Display results function  
-function displayResults(results) {
+  // Display results function  
+  function displayResults(results) {
     const opplegg1Box = document.getElementById("opplegg1-title");
     const opplegg1Description = document.getElementById("opplegg1-description");
     const opplegg2Box = document.getElementById("opplegg2-title");
@@ -278,22 +278,22 @@ function displayResults(results) {
 
     // If no results, show a message
     if (results.length === 0) {
-        opplegg1Box.innerText = "Ingen lignende opplegg funnet.";
-        return;
+      opplegg1Box.innerText = "Ingen lignende opplegg funnet.";
+      return;
     }
 
     // Display results in the boxes
     if (results[0]) {
-        opplegg1Box.innerText = results[0].name;
-        opplegg1Description.innerText = `Similarity: ${(results[0].similarity_score * 100).toFixed(2)}%`;
+      opplegg1Box.innerText = results[0].name;
+      opplegg1Description.innerText = `Similarity: ${(results[0].similarity_score * 100).toFixed(2)}%`;
     }
     if (results[1]) {
-        opplegg2Box.innerText = results[1].name;
-        opplegg2Description.innerText = `Similarity: ${(results[1].similarity_score * 100).toFixed(2)}%`;
+      opplegg2Box.innerText = results[1].name;
+      opplegg2Description.innerText = `Similarity: ${(results[1].similarity_score * 100).toFixed(2)}%`;
     }
     if (results[2]) {
-        opplegg3Box.innerText = results[2].name;
-        opplegg3Description.innerText = `Similarity: ${(results[2].similarity_score * 100).toFixed(2)}%`;
+      opplegg3Box.innerText = results[2].name;
+      opplegg3Description.innerText = `Similarity: ${(results[2].similarity_score * 100).toFixed(2)}%`;
     }
-}
+  }
 }
