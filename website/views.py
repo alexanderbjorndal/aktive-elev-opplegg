@@ -240,23 +240,23 @@ def admin_users():
     
     return render_template('brukere.html', user=current_user, user_data=user_data)
 
-@views.route('/compare', methods=['GET'])
+@views.route('/compare', methods=['GET', 'POST'])
 def compare_opplegg():
     opplegg_id = request.args.get('opplegg_id')
+    print(f"Received opplegg_id: {opplegg_id}")
     
     # Query the Opplegg table for the opplegg based on the ID
-    opplegg = Opplegg.query.get(opplegg_id)
+    opplegg = Opplegg.query.filter_by(id=opplegg_id).first()
 
     if not opplegg:
         return jsonify({"error": "Opplegg not found"}), 404
 
-    # Call the utility function to get similar opplegg
+    # Call the utility function to get similar opplegg (now including ids)
     similar_opplegg = get_similar_opplegg(opplegg.id)
 
-    print(similar_opplegg)  # Add this for debugging
+    print(f"Similar opplegg: {similar_opplegg}")  # Check what data is returned
 
     return jsonify(similar_opplegg)
-
 
 @event.listens_for(User.__table__, 'after_create')
 def create_admin_user(*args, **kwargs):

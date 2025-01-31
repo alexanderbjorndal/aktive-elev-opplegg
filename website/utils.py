@@ -77,7 +77,9 @@ def get_similar_opplegg(opplegg_id):
             common_traits = get_trait_similarity(opplegg, other_opplegg)  # Pass the correct opplegg
 
             similar_opplegg.append({
+                "id": other_opplegg.id,
                 "name": other_opplegg.name,
+                "data": other_opplegg.data,
                 "similarity_score": similarity.similarity_score,
                 "common_traits": common_traits,  # Dynamically filled with real common traits
             })

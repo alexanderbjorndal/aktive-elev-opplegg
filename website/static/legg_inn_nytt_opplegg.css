@@ -113,6 +113,12 @@ textarea {
   display: inline-block; /* labels on the same line */
 }
 
+/* Remove the default link styles */
+a {
+  text-decoration: none;  /* Removes underline */
+  color: inherit;         /* Inherits the color from its parent */
+}
+
 .three-boxes-container {
   display: flex;
   justify-content: space-between; /* Adjusts spacing between boxes */
@@ -136,6 +142,7 @@ textarea {
   transform: translateY(-3px); /* Slight lift on hover */
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
 }
+
 
 
 

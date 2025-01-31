@@ -1,3 +1,4 @@
+
 function deleteOpplegg(oppleggId) {
   fetch("/delete-opplegg", {
     method: "POST",
@@ -171,6 +172,93 @@ document.querySelectorAll('input[name="tag"]').forEach((checkbox) => {
   });
 });
 
+ const oppleggId = new URLSearchParams(window.location.search).get('opplegg_id');
+
+if (oppleggId) {
+
+  document.addEventListener("DOMContentLoaded", async () => {
+      const urlParams = new URLSearchParams(window.location.search);  // Get query string params
+      const oppleggId = urlParams.get("opplegg_id");  // Extract opplegg_id from URL
+      console.log("Extracted opplegg_id from URL:", oppleggId);  // Debugging
+
+      if (oppleggId) {
+          const results = await fetchComparison(oppleggId);  // Make the fetch request
+          if (results && results.length > 0) {
+              displayResults(results);  // Display the results in the boxes
+          } else {
+              console.error("No results found or the results are empty.");
+          }
+      } else {
+          console.error("No opplegg_id found in the URL.");
+      }
+  });
+
+  // Fetch comparison function  
+  async function fetchComparison(oppleggId) {
+      const response = await fetch(`/compare?opplegg_id=${encodeURIComponent(oppleggId)}`);  // This calls /compare with opplegg_id
+      if (!response.ok) {
+          return [];
+      }
+      const data = await response.json();  // Parse the JSON response
+      return data;
+  }
+
+  // Display results function  
+function displayResults(results) {
+    console.log("displayResults called", results);  // Log the results to see the structure
+
+    const opplegg1Link = document.getElementById("opplegg1-link");
+    const opplegg1Box = document.getElementById("opplegg1-title");
+    const opplegg1Description = document.getElementById("opplegg1-description");
+
+    const opplegg2Link = document.getElementById("opplegg2-link");
+    const opplegg2Box = document.getElementById("opplegg2-title");
+    const opplegg2Description = document.getElementById("opplegg2-description");
+
+    const opplegg3Link = document.getElementById("opplegg3-link");
+    const opplegg3Box = document.getElementById("opplegg3-title");
+    const opplegg3Description = document.getElementById("opplegg3-description");
+
+    // Clear previous results
+    opplegg1Box.innerHTML = '';
+    opplegg1Description.innerHTML = '';
+    opplegg2Box.innerHTML = '';
+    opplegg2Description.innerHTML = '';
+    opplegg3Box.innerHTML = '';
+    opplegg3Description.innerHTML = '';
+
+    // If no results, show a message
+    if (results.length === 0) {
+        opplegg1Box.innerText = "Ingen lignende opplegg funnet.";
+        return;
+    }
+
+    // Display results in the boxes and set up links
+    if (results[0]) {
+        opplegg1Box.innerText = results[0].name;
+        opplegg1Description.innerText = `${results[0].data}`;
+        opplegg1Link.href = `/se-opplegg?opplegg_id=${results[0].id}`;  // Use the id for the link
+        console.log(`opplegg1 link set to: /se-opplegg?opplegg_id=${results[0].id}`);  // Debugging
+    }
+    if (results[1]) {
+        opplegg2Box.innerText = results[1].name;
+        opplegg2Description.innerText = `${results[1].data}`;
+        opplegg2Link.href = `/se-opplegg?opplegg_id=${results[1].id}`;  // Use the id for the link
+        console.log(`opplegg2 link set to: /se-opplegg?opplegg_id=${results[1].id}`);  // Debugging
+    }
+    if (results[2]) {
+        opplegg3Box.innerText = results[2].name;
+        opplegg3Description.innerText = `${results[2].data}`;
+        opplegg3Link.href = `/se-opplegg?opplegg_id=${results[2].id}`;  // Use the id for the link
+        console.log(`opplegg3 link set to: /se-opplegg?opplegg_id=${results[2].id}`);  // Debugging
+    }
+}
+
+
+
+}
+
+
 let debounceTimer;
 const searchBar = document.getElementById("search-bar");
 if (searchBar) {
@@ -235,65 +323,4 @@ if (searchBar) {
     return urlParams.get('opplegg_id');
   }
 
-  document.addEventListener("DOMContentLoaded", async () => {
-    // Get opplegg_id from the current URL query string (as you are showing a single opplegg page)
-    const urlParams = new URLSearchParams(window.location.search);
-    const oppleggId = urlParams.get("opplegg_id");
-
-    if (oppleggId) {
-      // Fetch comparison data for the selected opplegg
-      const results = await fetchComparison(oppleggId);
-      displayResults(results);
-    }
-  });
-
-  // Fetch comparison function  
-  async function fetchComparison(oppleggId) {
-    console.log(`Fetching comparison for opplegg ID: ${oppleggId}`);
-    const response = await fetch(`/compare?opplegg_id=${encodeURIComponent(oppleggId)}`);
-    if (!response.ok) {
-      console.error("Failed to fetch comparison data");
-      return [];
-    }
-    const data = await response.json();
-    return data;
-  }
-
-  // Display results function  
-  function displayResults(results) {
-    const opplegg1Box = document.getElementById("opplegg1-title");
-    const opplegg1Description = document.getElementById("opplegg1-description");
-    const opplegg2Box = document.getElementById("opplegg2-title");
-    const opplegg2Description = document.getElementById("opplegg2-description");
-    const opplegg3Box = document.getElementById("opplegg3-title");
-    const opplegg3Description = document.getElementById("opplegg3-description");
-
-    // Clear previous results
-    opplegg1Box.innerHTML = '';
-    opplegg1Description.innerHTML = '';
-    opplegg2Box.innerHTML = '';
-    opplegg2Description.innerHTML = '';
-    opplegg3Box.innerHTML = '';
-    opplegg3Description.innerHTML = '';
-
-    // If no results, show a message
-    if (results.length === 0) {
-      opplegg1Box.innerText = "Ingen lignende opplegg funnet.";
-      return;
-    }
-
-    // Display results in the boxes
-    if (results[0]) {
-      opplegg1Box.innerText = results[0].name;
-      opplegg1Description.innerText = `Similarity: ${(results[0].similarity_score * 100).toFixed(2)}%`;
-    }
-    if (results[1]) {
-      opplegg2Box.innerText = results[1].name;
-      opplegg2Description.innerText = `Similarity: ${(results[1].similarity_score * 100).toFixed(2)}%`;
-    }
-    if (results[2]) {
-      opplegg3Box.innerText = results[2].name;
-      opplegg3Description.innerText = `Similarity: ${(results[2].similarity_score * 100).toFixed(2)}%`;
-    }
-  }
 }

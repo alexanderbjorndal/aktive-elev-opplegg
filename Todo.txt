@@ -2,7 +2,7 @@ Admin-page:
 - Logs?
 
 Se opplegg:
-- Similar opplegg
+- Similar opplegg. Neste er å gjøre en ny sammenligning når et nytt opplegg blir lagt til, og å ha legge inn en livetest når man legger inn nytt opplegg (siste er ikke et must)
 
 Add opplegg:
 - Similar opplegg
