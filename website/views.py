@@ -250,7 +250,6 @@ def admin_users():
 @views.route('/compare', methods=['GET', 'POST'])
 def compare_opplegg():
     opplegg_id = request.args.get('opplegg_id')
-    print(f"Received opplegg_id: {opplegg_id}")
     
     # Query the Opplegg table for the opplegg based on the ID
     opplegg = Opplegg.query.filter_by(id=opplegg_id).first()
@@ -260,8 +259,6 @@ def compare_opplegg():
 
     # Call the utility function to get similar opplegg (now including ids)
     similar_opplegg = get_similar_opplegg(opplegg.id)
-
-    print(f"Similar opplegg: {similar_opplegg}")  # Check what data is returned
 
     return jsonify(similar_opplegg)
 

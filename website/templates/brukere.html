@@ -26,48 +26,44 @@
                     <td>{{ data.user.first_name }}</td>
                     <td>
                         {% if data.opplegg %}
-                            <ul class="list-unstyled">
-                                {% for opp in data.opplegg %}
-                                    <li>
-                                        <a href="{{ url_for('views.se_opplegg', opplegg_id=opp.id) }}">
-                                            {{ opp.name }}
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
+                            {% for opp in data.opplegg %}
+                                <div>
+                                    <a href="{{ url_for('views.se_opplegg', opplegg_id=opp.id) }}">
+                                        {{ opp.name }}
+                                    </a>
+                                </div>
+                            {% endfor %}
                         {% else %}
                             Ingen opplegg lastet opp
                         {% endif %}
                     </td>
                     <td>
                         {% if data.favorites %}
-                            <ul class="list-unstyled">
-                                {% for favorite in data.favorites %}
-                                    <li>
-                                        <a href="{{ url_for('views.se_opplegg', opplegg_id=favorite.id) }}">
-                                            {{ favorite.name }}
-                                        </a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
+                            {% for favorite in data.favorites %}
+                                <div>
+                                    <a href="{{ url_for('views.se_opplegg', opplegg_id=favorite.id) }}">
+                                        {{ favorite.name }}
+                                    </a>
+                                </div>
+                            {% endfor %}
                         {% else %}
                             Ingen favoritter
                         {% endif %}
                     </td>
                     <td>
-                    {% if data.user.comments %}
-                        <ul class="list-unstyled">
+                        {% if data.user.comments %}
                             {% for comment in data.user.comments %}
-                                <li>
-                                    {{ comment.content|truncate(50) }} <!-- Display truncated comment content -->
-                                    <a href="{{ url_for('views.se_opplegg', opplegg_id=comment.opplegg.id) }}"> (View Opplegg) </a>
-                                </li>
+                                {{ comment.content|truncate(50) }}
+                                <div>
+                                    <a href="{{ url_for('views.se_opplegg', opplegg_id=comment.opplegg.id) }}">
+                                        (View Opplegg)
+                                    </a>
+                                </div>
                             {% endfor %}
-                        </ul>
-                    {% else %}
-                        Ingen kommentarer
-                    {% endif %}
-                </td>
+                        {% else %}
+                            Ingen kommentarer
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -81,23 +81,29 @@ def get_similar_opplegg(opplegg_id):
     if not opplegg:
         return None
 
+    # Get all similarities for this opplegg
     similarities = OppleggSimilarity.query.filter(
         (OppleggSimilarity.opplegg1_id == opplegg_id) |
         (OppleggSimilarity.opplegg2_id == opplegg_id)
-    ).order_by(OppleggSimilarity.similarity_score.desc()).limit(3).all()
+    ).all()
 
     similar_opplegg = []
     for similarity in similarities:
-        other_opplegg_id = similarity.opplegg2_id if similarity.opplegg1_id == opplegg_id else similarity.opplegg1_id
-        other_opplegg = Opplegg.query.get(other_opplegg_id)
-
-        if other_opplegg:
-            common_traits = get_trait_similarity(opplegg, other_opplegg)
+        other_id = similarity.opplegg2_id if similarity.opplegg1_id == opplegg_id else similarity.opplegg1_id
+        other = Opplegg.query.get(other_id)
+        if other:
+            common_traits = get_trait_similarity(opplegg, other)
             similar_opplegg.append({
-                "id": other_opplegg.id,
-                "name": other_opplegg.name,
-                "data": other_opplegg.data,
+                "id": other.id,
+                "name": other.name,
+                "data": other.data,
                 "similarity_score": similarity.similarity_score,
                 "common_traits": common_traits,
             })
-    return similar_opplegg
+
+    # Sort in Python to ensure ordering is correct
+    similar_opplegg.sort(key=lambda x: x['similarity_score'], reverse=True)
+
+    # Return top 3
+    return similar_opplegg[:3]
+
