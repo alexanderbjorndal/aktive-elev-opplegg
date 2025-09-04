@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash
 from sqlalchemy import event
 from .models import Opplegg, Trait, User, Comment
 from .utils import get_similar_opplegg
+from website.utils import update_opplegg_similarity
 from . import db
 import json, os
 from collections import defaultdict
@@ -80,7 +81,6 @@ def add_opplegg():
                 flash('Opplegg lagt til', category='success')
 
                 # Update the similarity for the new opplegg
-                from website.utils import update_opplegg_similarity
                 update_opplegg_similarity(new_name)
 
         return redirect(url_for('views.home'))

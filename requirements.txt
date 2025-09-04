@@ -4,3 +4,4 @@ flask-login
 Werkzeug
 python-dotenv
 flask-migrate
+nltk
