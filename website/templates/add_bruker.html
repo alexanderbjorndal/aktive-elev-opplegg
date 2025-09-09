@@ -30,9 +30,9 @@
         <td>{{ entry.email }}</td>
         <td>
           {% if entry.is_used %}
-            Brukt av {{ entry.user_name }}
+            <span style="color:green;">Brukt av {{ entry.user_name }}</span>
           {% else %}
-            Ikke aktivert
+            <span style="color:red;">Ikke aktivert</span>
           {% endif %}
         </td>
         <td>
