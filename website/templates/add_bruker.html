@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Legg til godkjent bruker{% endblock %}
+{% block content %}
+<div class="container">
+  <h1 align="center">Legg til godkjent e-post</h1>
+
+  <form method="POST" class="mb-4">
+    <input
+      type="email"
+      name="email"
+      placeholder="Skriv inn e-postadresse"
+      required
+      class="form-control mb-2"
+    />
+    <button type="submit" class="btn btn-primary">Legg til e-post</button>
+  </form>
+
+  <h2>Godkjente e-poster</h2>
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>E-post</th>
+        <th>Status</th>
+        <th>Handling</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for entry in email_status %}
+      <tr>
+        <td>{{ entry.email }}</td>
+        <td>
+          {% if entry.is_used %}
+            Brukt av {{ entry.user_name }}
+          {% else %}
+            Ikke aktivert
+          {% endif %}
+        </td>
+        <td>
+          <form method="POST" action="{{ url_for('views.delete_approved_email', approved_id=entry.id) }}">
+            <button type="submit" class="btn btn-danger btn-sm">Slett</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

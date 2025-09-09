@@ -43,13 +43,18 @@ s = URLSafeTimedSerializer('Nesbru144')  # Replace with your secret key
 @auth.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
     if request.method == 'POST':
-        email = request.form.get('email')
+        email = request.form.get('email').strip().lower()
         first_name = request.form.get('firstName')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
         one_time_password = request.form.get('one_time_password')
         one_time_password_from_env = os.getenv('ONE_TIME_PASSWORD')
         
+        approved = ApprovedEmail.query.filter_by(email=email).first()
+        if not approved:
+            flash('Denne e-posten er ikke godkjent for registrering. Kontakt alexandebj@afk.no for tilgang.', category='error')
+            return render_template("sign_up.html", user=current_user)
+
         if not one_time_password:
             raise ValueError("One time password must be set in environment variables.")
 
@@ -64,8 +69,6 @@ def sign_up():
             flash('Passordene er ikke like.', category='error')
         elif len(password1) < 5:
             flash('Passordet må inneholde minst fem tegn.', category='error')
-        elif not email.endswith('afk.no'):
-            flash('Eposten må være en jobbepost fra Akershus', category='error')
         elif one_time_password != one_time_password_from_env:
             flash('Engangspassordet stemmer ikke, ta kontakt på alexandebj@afk.no for å få nytt engangspassord.', category='error')
         else:

@@ -72,3 +72,8 @@ class OppleggSimilarity(db.Model):
 
     opplegg1 = db.relationship('Opplegg', foreign_keys=[opplegg1_id])
     opplegg2 = db.relationship('Opplegg', foreign_keys=[opplegg2_id])
+
+class ApprovedEmail(db.Model):
+    __tablename__ = 'approved_emails'
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(150), unique=True, nullable=False)

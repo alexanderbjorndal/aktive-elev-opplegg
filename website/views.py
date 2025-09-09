@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, request, flash, jsonify, redirect,
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from sqlalchemy import event
-from .models import Opplegg, Trait, User, Comment
+from .models import Opplegg, Trait, User, Comment, ApprovedEmail
 from .utils import get_similar_opplegg
 from website.utils import update_opplegg_similarity
 from . import db
@@ -86,6 +86,55 @@ def add_opplegg():
         return redirect(url_for('views.home'))
 
     return render_template("add_opplegg.html", user=current_user, klasse_groups=klasse_groups)
+
+@views.route('/add-bruker', methods=['GET', 'POST'])
+@login_required
+def add_bruker():
+    if current_user.role != 'admin':
+        flash("Du har ikke tilgang til denne siden.", category="error")
+        return redirect(url_for('views.home'))
+
+    if request.method == 'POST':
+        email = request.form.get('email')
+        if not email:
+            flash("Du må skrive inn en e-post.", category="error")
+        else:
+            existing = ApprovedEmail.query.filter_by(email=email).first()
+            if existing:
+                flash("Denne e-posten er allerede i listen.", category="error")
+            else:
+                new_email = ApprovedEmail(email=email)
+                db.session.add(new_email)
+                db.session.commit()
+                flash("E-posten ble lagt til i listen over godkjente brukere.", category="success")
+        return redirect(url_for('views.add_bruker'))
+
+    # Get all approved emails and check if each has a user
+    approved_emails = ApprovedEmail.query.all()
+    email_status = []
+    for approved in approved_emails:
+        user = User.query.filter_by(email=approved.email).first()
+        email_status.append({
+            "id": approved.id,
+            "email": approved.email,
+            "is_used": user is not None,
+            "user_name": user.first_name if user else None
+        })
+
+    return render_template("add_bruker.html", user=current_user, email_status=email_status)
+
+@views.route('/delete-approved-email/<int:approved_id>', methods=['POST'])
+@login_required
+def delete_approved_email(approved_id):
+    if current_user.role != 'admin':
+        flash("Du har ikke tilgang til denne funksjonen.", category="error")
+        return redirect(url_for('views.home'))
+
+    approved = ApprovedEmail.query.get_or_404(approved_id)
+    db.session.delete(approved)
+    db.session.commit()
+    flash(f"E-posten {approved.email} ble slettet fra listen.", category="success")
+    return redirect(url_for('views.add_bruker'))
 
 
 @views.route('/delete-opplegg', methods=['POST'])

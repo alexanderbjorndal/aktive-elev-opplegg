@@ -1,5 +1,6 @@
 Admin-page:
 - Logs?
+- Add approved users
 
 Add opplegg:
 - Similar opplegg Neste er å legge inn en livetest når man legger inn nytt opplegg (ikke et must)
@@ -8,9 +9,6 @@ User pages:
 - See opplegg
 - See favorites
 - See comments
-
-
-Merge!!!
 
 
 
@@ -29,3 +27,5 @@ Se opplegg:
 - Comments
 - Number of likes
 - Similar opplegg å gjøre en ny sammenligning når et nytt opplegg blir lagt til,
+
+Merge!!!
