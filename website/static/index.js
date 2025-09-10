@@ -261,21 +261,52 @@ function displayResults(results) {
 
 let debounceTimer;
 const searchBar = document.getElementById("search-bar");
+
 if (searchBar) {
   searchBar.addEventListener("keyup", function () {
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(() => {
-      const query = this.value.toLowerCase();
-      const items = document.querySelectorAll(".list-group-item");
+      const query = this.value.trim().toLowerCase();
+      const items = Array.from(document.querySelectorAll(".list-group-item"));
 
-      items.forEach((item) => {
+      if (!query) {
+        // show all if query is empty
+        items.forEach(item => item.style.display = "");
+        return;
+      }
+
+      const queryWords = query.split(/\s+/); // split query into words
+
+      // Compute a score for each item based on how many words match
+      const scoredItems = items.map(item => {
         const title = item.getAttribute("data-title").toLowerCase();
         const description = item.getAttribute("data-description").toLowerCase();
-        item.style.display =
-          title.includes(query) || description.includes(query) ? "" : "none";
+        const comments = item.getAttribute("data-comments")?.toLowerCase() || "";
+
+        let score = 0;
+        queryWords.forEach(word => {
+          if (title.includes(word)) score += 3;       // give title more weight
+          if (description.includes(word)) score += 2;
+          if (comments.includes(word)) score += 1;
+        });
+
+        return { item, score };
       });
-    }, 300);
+
+      // Hide items with zero score and show the rest
+      scoredItems.forEach(si => si.item.style.display = si.score > 0 ? "" : "none");
+
+      // Sort items in the DOM by score descending
+      const parent = items[0].parentNode;
+      scoredItems
+        .filter(si => si.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .forEach(si => parent.appendChild(si.item));
+
+    }, 300); // debounce
   });
+}
+
 
   document.querySelectorAll(".opplegg-delete").forEach((button) => {
     button.addEventListener("click", function (event) {
@@ -323,4 +354,85 @@ if (searchBar) {
     return urlParams.get('opplegg_id');
   }
 
+let debounceTimer2;
+
+async function fetchSimilarOpplegg() {
+    const name = document.getElementById("opplegg").value;
+    const description = document.getElementById("data").value;
+    const selectedTraits = [...document.querySelectorAll("input[name='tag']:checked")].map(cb => cb.value);
+
+    const response = await fetch("/live-compare", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, description, traits: selectedTraits })
+    });
+
+    if (!response.ok) return;
+
+    const results = await response.json();
+
+    const container = document.getElementById("similarity-list");
+    const warningContainer = document.getElementById("similarity-warning");
+    container.innerHTML = "";
+    warningContainer.innerHTML = ""; // clear previous warning
+
+    if (results.length === 0) {
+        container.innerText = "Ingen lignende opplegg funnet.";
+        return;
+    }
+
+    // Sort results by similarity descending
+    results.sort((a, b) => b.similarity_score - a.similarity_score);
+
+    // Check for high similarity (>70%) on the first opplegg
+const first = results[0];
+if (first.similarity_score > 0.7) {
+    const percent = (first.similarity_score * 100).toFixed(0);
+    warningContainer.innerHTML = `
+        <div style="background-color: #fff3cd; padding: 10px; border-left: 5px solid #ffeeba; border-radius: 5px; margin-bottom: 10px; font-weight: 500;">
+            Er du sikker på at opplegget ditt ikke er det samme som 
+            <a href="/se-opplegg?opplegg_id=${first.id}" style="text-decoration: underline; color: #0a58ca;">${first.name}</a> 
+            ?<br>
+            Du kan også skrive kommentar under 
+            <a href="/se-opplegg?opplegg_id=${first.id}#comments" style="text-decoration: underline; color: #0a58ca;">${first.name}</a> 
+            for å forklare en variant av opplegget.
+        </div>
+    `;
 }
+
+// Display all results
+results.forEach((opplegg, index) => {
+    const div = document.createElement("div");
+    const percent = (opplegg.similarity_score * 100).toFixed(1);
+    div.innerHTML = `
+        <a href="/se-opplegg?opplegg_id=${opplegg.id}">
+          <strong>${opplegg.name}</strong>
+        </a>
+        <p>${opplegg.data}</p>
+        <small>Likhet: ${percent}%</small>
+        <hr>
+    `;
+    // Only highlight the first if similarity > 70%
+    if (index === 0 && opplegg.similarity_score > 0.7) {
+        div.style.backgroundColor = "#fff3cd"; // subtle light yellow
+        div.style.borderLeft = "4px solid #ffeeba"; // soft border
+        div.style.borderRadius = "5px";
+        div.style.padding = "5px 10px";
+    }
+    container.appendChild(div);
+});
+}
+
+// Debounce function to reduce server calls
+function debounceFetch() {
+    clearTimeout(debounceTimer2);
+    debounceTimer2 = setTimeout(fetchSimilarOpplegg, 300);
+}
+
+// Event listeners
+document.getElementById("opplegg").addEventListener("input", debounceFetch);
+document.getElementById("data").addEventListener("input", debounceFetch);
+document.querySelectorAll("input[name='tag']").forEach(cb => {
+    cb.addEventListener("change", debounceFetch);
+});
+

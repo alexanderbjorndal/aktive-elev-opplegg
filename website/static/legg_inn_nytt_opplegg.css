@@ -66,9 +66,9 @@ fieldset {
 }
 
 textarea:disabled {
-    color: black; /* Text color */
-    background-color: #eaeef1; /* Background color */
-    border: 1px solid #ccc; /* Border color (if desired) */
+  color: black; /* Text color */
+  background-color: #eaeef1; /* Background color */
+  border: 1px solid #ccc; /* Border color (if desired) */
 }
 
 /* Styling for the form fields to match the login form */
@@ -79,7 +79,7 @@ input[type="password"] {
   width: 100%; /* full width */
   padding: 10px;
   font-size: 16px;
-  background-color: #eaeef1;; /* Light background color */
+  background-color: #eaeef1; /* Light background color */
   border-radius: 5px; /* Rounded corners */
   border: 1px solid #ccc; /* Border for inputs */
   margin-bottom: 15px; /* Space between fields */
@@ -115,8 +115,8 @@ textarea {
 
 /* Remove the default link styles */
 a {
-  text-decoration: none;  /* Removes underline */
-  color: inherit;         /* Inherits the color from its parent */
+  text-decoration: none; /* Removes underline */
+  color: inherit; /* Inherits the color from its parent */
 }
 
 .three-boxes-container {
@@ -143,46 +143,43 @@ a {
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1); /* Enhanced shadow on hover */
 }
 
-
 /* Add Media Queries for Small Screens */
 @media only screen and (max-width: 768px) {
-#centerer {
-  max-width: 700px; /* or your desired width */
-  margin: 0 auto; /* center the container */
-  padding: 1rem; /* some padding for aesthetics */
-}
+  #centerer {
+    max-width: 700px; /* or your desired width */
+    margin: 0 auto; /* center the container */
+    padding: 1rem; /* some padding for aesthetics */
+  }
 
-ul.ks-cboxtags li label {
-  padding: 4px 6px;
-  font-size: small;
-}
+  ul.ks-cboxtags li label {
+    padding: 4px 6px;
+    font-size: small;
+  }
 
-
-ul.ks-cboxtags li label::before {
-  font-weight: 700;
-  font-size: small;
-  padding: 2px 5px 2px 2px;
-  transition: transform 0.2s ease-in-out;
-}
+  ul.ks-cboxtags li label::before {
+    font-weight: 700;
+    font-size: small;
+    padding: 2px 5px 2px 2px;
+    transition: transform 0.2s ease-in-out;
+  }
 }
 
 @media only screen and (max-width: 480px) {
-#centerer {
-  max-width: 480px; /* or your desired width */
-  margin: 0 auto; /* center the container */
-  padding: 1rem; /* some padding for aesthetics */
-}
+  #centerer {
+    max-width: 480px; /* or your desired width */
+    margin: 0 auto; /* center the container */
+    padding: 1rem; /* some padding for aesthetics */
+  }
 
-ul.ks-cboxtags li label {
-  padding: 3px 5px;
-  font-size: smaller;
-}
+  ul.ks-cboxtags li label {
+    padding: 3px 5px;
+    font-size: smaller;
+  }
 
-
-ul.ks-cboxtags li label::before {
-  font-weight: 900;
-  font-size: smaller;
-  padding: 2px 5px 2px 2px;
-  transition: transform 0.2s ease-in-out;
-}
+  ul.ks-cboxtags li label::before {
+    font-weight: 900;
+    font-size: smaller;
+    padding: 2px 5px 2px 2px;
+    transition: transform 0.2s ease-in-out;
+  }
 }

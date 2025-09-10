@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, redirect, url_for
+from flask import Blueprint, render_template, request, flash, redirect, url_for, jsonify
 from flask_login import login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from itsdangerous import URLSafeTimedSerializer
@@ -70,7 +70,7 @@ def sign_up():
         elif len(password1) < 5:
             flash('Passordet må inneholde minst fem tegn.', category='error')
         elif one_time_password != one_time_password_from_env:
-            flash('Engangspassordet stemmer ikke, ta kontakt på alexandebj@afk.no for å få nytt engangspassord.', category='error')
+            flash('Engangskoden stemmer ikke, ta kontakt på alexandebj@afk.no for å få ny engangskode.', category='error')
         else:
             new_user = User(email=email, first_name=first_name, password=generate_password_hash(password1, method='pbkdf2:sha256'), is_email_confirmed=True)
             db.session.add(new_user)
@@ -82,3 +82,10 @@ def sign_up():
             return redirect(url_for('views.home'))
 
     return render_template("sign_up.html", user=current_user)
+
+@auth.route('/check-email', methods=['POST'])
+def check_email():
+    data = request.get_json()
+    email = data.get('email', '').strip().lower()
+    approved = bool(ApprovedEmail.query.filter_by(email=email).first())
+    return jsonify({"approved": approved})

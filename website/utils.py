@@ -107,3 +107,11 @@ def get_similar_opplegg(opplegg_id):
     # Return top 3
     return similar_opplegg[:3]
 
+def compare_virtual_opplegg(virtual_opplegg, existing_opplegg):
+    """
+    Compare a not-yet-saved opplegg (virtual) with an existing one.
+    """
+    text_similarity = get_text_similarity(virtual_opplegg.data, existing_opplegg.data)
+    trait_similarity = get_trait_similarity(virtual_opplegg, existing_opplegg)
+    final_similarity = 0.2 * text_similarity + 0.8 * trait_similarity
+    return final_similarity

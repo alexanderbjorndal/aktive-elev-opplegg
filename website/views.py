@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from sqlalchemy import event
 from .models import Opplegg, Trait, User, Comment, ApprovedEmail
-from .utils import get_similar_opplegg
+from .utils import get_similar_opplegg, compare_virtual_opplegg
 from website.utils import update_opplegg_similarity
 from . import db
 import json, os
@@ -40,17 +40,23 @@ def home():
         for opplegget in opplegg
     }
 
-    # Return the rendered template with the context
+    # Precompute comments text for each opplegg
+    for o in opplegg:
+        o.comments_text = ', '.join(getattr(c, 'content') for c in o.comments if getattr(c, 'content'))
+
+
+    # Then pass to render_template
     return render_template(
         "home.html",
-        user=current_user,  # Current user
-        users=user_list,     # List of users (ID, first name)
-        all_opplegg=opplegg,  # List of all opplegg
-        traits=traits,       # List of traits
-        klasse_groups=klasse_groups,  # Grouped traits
-        opplegg_comment_counts=opplegg_comment_counts,  # Comment counts by opplegg ID
-        opplegg_favorites_counts=opplegg_favorites_counts  # Favorites counts by opplegg ID
+        user=current_user,
+        users=user_list,
+        all_opplegg=opplegg,
+        traits=traits,
+        klasse_groups=klasse_groups,
+        opplegg_comment_counts=opplegg_comment_counts,
+        opplegg_favorites_counts=opplegg_favorites_counts,
     )
+
 
 @views.route('/add-opplegg', methods=['GET', 'POST'])
 @login_required
@@ -266,9 +272,9 @@ def delete_comment():
         # Delete the comment from the database
         db.session.delete(comment)
         db.session.commit()
-        flash('Comment deleted', category='success')
+        flash('Kommentar slettet', category='success')
     else:
-        flash('Comment not found', category='error')
+        flash('Kommentar ikke funnet', category='error')
 
     # Redirect back to the opplegg page
     return redirect(url_for('views.se_opplegg', opplegg_id=opplegg_id))
@@ -336,6 +342,36 @@ def create_admin_user(*args, **kwargs):
         print(f"Admin user {admin_email} created successfully.")
     else:
         print(f"Admin user {admin_user.email} already exists.")
+
+@views.route('/live-compare', methods=['POST'])
+@login_required
+def live_compare():
+    data = request.json
+    name = data.get("name", "")
+    description = data.get("description", "")
+    selected_traits = data.get("traits", [])
+
+    # Turn trait names into Trait objects
+    traits = Trait.query.filter(Trait.name.in_(selected_traits)).all()
+
+    # Construct a "virtual opplegg" (not saved in DB)
+    virtual_opplegg = Opplegg(name=name, data=description)
+    virtual_opplegg.traits = traits
+
+    # Compare against all existing opplegg
+    results = []
+    for opplegg in Opplegg.query.all():
+        score = compare_virtual_opplegg(virtual_opplegg, opplegg)
+        results.append({
+            "id": opplegg.id,
+            "name": opplegg.name,
+            "data": opplegg.data[:150] + "..." if len(opplegg.data) > 150 else opplegg.data,
+            "similarity_score": score
+        })
+
+    # Sort by similarity and return top 3
+    results.sort(key=lambda x: x["similarity_score"], reverse=True)
+    return jsonify(results[:3])
 
 @event.listens_for(Trait.__table__, 'after_create')
 def create_traits(*args, **kwargs):

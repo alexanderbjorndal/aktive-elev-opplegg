@@ -1,7 +1,6 @@
 {% extends "base.html" %}{% block title %}Legg inn nytt opplegg{% endblock %} {%
 block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='legg_inn_nytt_opplegg.css') }}" />
-
 <div id="opplegg_body">
   <div id="centerer">
     <h1 align="center">Legg inn nytt opplegg</h1>
@@ -58,6 +57,11 @@ block content %}
         </fieldset>
       </ul>
       {% endfor %}
+      <div id="similarity-results" style="margin-top: 2rem;">
+      <h2>Opplegg som ligner:</h2>
+      <div id="similarity-warning" style="margin-bottom: 1rem;"></div>
+      <div id="similarity-list">Begynn å skrive eller velge egenskaper for å få en sammenligning</div>
+      </div>
       <div align="center">
         <button type="submit" onsubmit="disableSubmitButton()" class="button-style" style="margin-top: 2rem">
           Large opplegget

@@ -49,12 +49,13 @@ block content %}
       <!--Loop through all opplegg-->
       {% for opplegg in all_opplegg %}
       <a href="{{ url_for('views.se_opplegg', opplegg_id=opplegg.id) }}"
-        class="list-group-item"
-        data-traits="{{ ','.join(opplegg.traits|map(attribute='name')) }}"
-        data-title="{{ opplegg.name }}"
-        data-description="{{ opplegg.data }}"
-        data-is-favorite="{{ 'true' if current_user.is_authenticated and opplegg in current_user.favorites else 'false' }}"
-        id="opplegg-{{ opplegg.id }}"
+      class="list-group-item"
+      data-traits="{{ ','.join(opplegg.traits|map(attribute='name')) }}"
+      data-title="{{ opplegg.name }}"
+      data-description="{{ opplegg.data }}"
+      data-comments="{{ opplegg.comments_text }}"
+      data-is-favorite="{{ 'true' if current_user.is_authenticated and opplegg in current_user.favorites else 'false' }}"
+      id="opplegg-{{ opplegg.id }}"
       >
         <!-- Title -->
         <div class="opplegg-title">{{ opplegg.name }}</div>
