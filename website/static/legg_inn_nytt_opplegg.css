@@ -52,9 +52,10 @@ ul.ks-cboxtags li input[type="checkbox"]:checked + label::before {
 }
 /* Add a max-width to the container */
 #centerer {
-  max-width: 800px; /* or your desired width */
+  max-width: 1000px; /* or your desired width */
   margin: 0 auto; /* center the container */
   padding: 1rem; /* some padding for aesthetics */
+  box-sizing: border-box;
 }
 
 /* Style for fieldsets */
@@ -145,41 +146,182 @@ a {
 
 /* Add Media Queries for Small Screens */
 @media only screen and (max-width: 768px) {
-  #centerer {
-    max-width: 700px; /* or your desired width */
-    margin: 0 auto; /* center the container */
-    padding: 1rem; /* some padding for aesthetics */
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-x: hidden; /* prevent horizontal scroll */
+  }
+
+  .mainclass {
+    margin-left: 0%;
+    margin-right: 0%;
+  }
+
+  /* Make parent containers full width */
+  #opplegg_body,
+  .container,
+  .three-boxes-container {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 10px; /* optional small padding on sides */
+  }
+
+  .three-boxes-container {
+    flex-direction: column; /* vertical stacking */
+    gap: 10px;
+  }
+
+  .three-boxes-container .box {
+    box-sizing: border-box;
+    flex: 1 1 100%;
+    max-width: 100%; /* Optional: sets a max width */
+    width: 100%; /* ensure full width */
+    min-width: 0; /* fix flexbox shrinking issues */
+  }
+
+  .container {
+    font-size: 14px; /* Smaller text for mobile */
+  }
+
+  .navbar-nav a {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+
+  .list-group-item {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+  }
+
+  .opplegg-title {
+    font-size: medium; /* Adjust font size for smaller screens */
   }
 
   ul.ks-cboxtags li label {
-    padding: 4px 6px;
+    border-radius: 16px;
+    padding: 2px 4px;
     font-size: small;
   }
 
-  ul.ks-cboxtags li label::before {
-    font-weight: 700;
-    font-size: small;
-    padding: 2px 5px 2px 2px;
-    transition: transform 0.2s ease-in-out;
+  #opplegg-color-part {
+    flex-wrap: wrap; /* Allow wrapping if necessary */
+    justify-content: flex-start; /* Align items at the start */
+  }
+
+  /* Make sure both children stay side by side as long as there's space */
+  .child:first-child,
+  .child:last-child {
+    flex-basis: 48%; /* Take up about 48% of the space each */
+  }
+
+  .child:first-child {
+    margin-right: 4%; /* Add some space between them */
+  }
+
+  /* Adjust child layout if it becomes too small for both to fit side by side */
+  .child:first-child,
+  .child:last-child {
+    flex-basis: 100%; /* Full width if space is tight */
+    margin-right: 0;
+  }
+
+  .opplegg-text {
+    -webkit-line-clamp: 2; /* Limit text length on smaller screens */
+    line-clamp: 2;
+    font-size: x-small;
+  }
+
+  #search-bar {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .login-container {
+    width: 90%;
+    margin: 20px auto;
+  }
+
+  .opplegg-trait {
+    border-radius: 20px;
+    padding: 4px 6px;
+    font-size: x-small;
+  }
+
+  .opplegg-favorite {
+    width: 30px; /* Set width to match original */
+    height: 30px; /* Set height to match original */
+  }
+
+  .opplegg-traits {
+    max-height: 100px; /* Limit the height to avoid overlap */
+    max-width: 40vw;
+  }
+
+  .opplegg-date-user {
+    font-size: 10px;
   }
 }
 
 @media only screen and (max-width: 480px) {
-  #centerer {
-    max-width: 480px; /* or your desired width */
-    margin: 0 auto; /* center the container */
-    padding: 1rem; /* some padding for aesthetics */
+  .navbar-nav a {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .opplegg-title {
+    font-size: small;
+    min-width: 100px;
+  }
+
+  .list-group-item {
+    padding: 10px;
   }
 
   ul.ks-cboxtags li label {
-    padding: 3px 5px;
+    border-radius: 12px;
+    padding: 2px 3px;
     font-size: smaller;
   }
 
-  ul.ks-cboxtags li label::before {
-    font-weight: 900;
-    font-size: smaller;
-    padding: 2px 5px 2px 2px;
-    transition: transform 0.2s ease-in-out;
+  .child {
+    padding: 0.5rem;
+  }
+
+  .child:first-child {
+    display: none;
+  }
+
+  .opplegg-text {
+    -webkit-line-clamp: 2; /* Limit text length even further on very small screens */
+    line-clamp: 2;
+    font-size: xx-small;
+  }
+
+  .form-control {
+    width: 100%; /* Make form inputs full width on small screens */
+  }
+
+  .opplegg-trait {
+    border-radius: 15px;
+    padding: 3px 4px;
+    font-size: xx-small;
+  }
+
+  .opplegg-favorite {
+    width: 20px; /* Set width to match original */
+    height: 20px; /* Set height to match original */
+  }
+
+  .opplegg-traits {
+    max-height: 100px; /* Limit the height to avoid overlap */
+    max-width: 30vw;
+  }
+
+  .opplegg-date-user {
+    font-size: 8px;
   }
 }
