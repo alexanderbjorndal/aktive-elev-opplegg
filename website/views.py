@@ -356,7 +356,9 @@ def live_compare():
 
     # Construct a "virtual opplegg" (not saved in DB)
     virtual_opplegg = Opplegg(name=name, data=description)
-    virtual_opplegg.traits = traits
+    # Instead of assigning DB objects directly, make copies if needed
+    virtual_opplegg.traits = list(Trait.query.filter(Trait.name.in_(selected_traits)).all())
+
 
     # Compare against all existing opplegg, excluding only the one with the same ID if editing
     query = Opplegg.query

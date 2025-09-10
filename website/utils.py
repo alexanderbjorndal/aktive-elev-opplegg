@@ -32,11 +32,15 @@ def get_text_similarity(data1, data2):
 
 
 def get_trait_similarity(opplegg1, opplegg2):
-    traits1 = {trait.name for trait in opplegg1.traits}
-    traits2 = {trait.name for trait in opplegg2.traits}
+    # Use trait names or IDs to avoid object identity issues
+    traits1 = {trait.name for trait in getattr(opplegg1, "traits", [])}
+    traits2 = {trait.name for trait in getattr(opplegg2, "traits", [])}
+    if not traits1 and not traits2:
+        return 0
     common_traits = traits1.intersection(traits2)
-    trait_score = len(common_traits) / max(len(traits1), len(traits2)) if max(len(traits1), len(traits2)) > 0 else 0
+    trait_score = len(common_traits) / max(len(traits1), len(traits2))
     return trait_score
+
 
 
 def compare_opplegg(opplegg1_id, opplegg2_id):
