@@ -358,9 +358,9 @@ def live_compare():
     virtual_opplegg = Opplegg(name=name, data=description)
     virtual_opplegg.traits = traits
 
-    # Compare against all existing opplegg
+    # Compare against all existing opplegg except one with the same name
     results = []
-    for opplegg in Opplegg.query.all():
+    for opplegg in Opplegg.query.filter(Opplegg.name != virtual_opplegg.name).all():
         score = compare_virtual_opplegg(virtual_opplegg, opplegg)
         results.append({
             "id": opplegg.id,
