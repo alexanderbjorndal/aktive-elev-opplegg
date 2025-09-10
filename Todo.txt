@@ -1,5 +1,4 @@
 I dag:
-- Layout mobil
 - Brukersider?
 - School (barneskole, ungdomsskole, vgs)
 - Database edit (in browser?)
