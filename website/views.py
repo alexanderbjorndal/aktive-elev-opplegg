@@ -358,9 +358,14 @@ def live_compare():
     virtual_opplegg = Opplegg(name=name, data=description)
     virtual_opplegg.traits = traits
 
-    # Compare against all existing opplegg except one with the same name
+    # Compare against all existing opplegg, excluding only the one with the same ID if editing
+    query = Opplegg.query
+    opp_id = data.get("id")  # Pass id from frontend if editing, else None
+    if opp_id:
+        query = query.filter(Opplegg.id != opp_id)
+
     results = []
-    for opplegg in Opplegg.query.filter(Opplegg.name != virtual_opplegg.name).all():
+    for opplegg in query.all():
         score = compare_virtual_opplegg(virtual_opplegg, opplegg)
         results.append({
             "id": opplegg.id,
@@ -372,6 +377,7 @@ def live_compare():
     # Sort by similarity and return top 3
     results.sort(key=lambda x: x["similarity_score"], reverse=True)
     return jsonify(results[:3])
+
 
 @event.listens_for(Trait.__table__, 'after_create')
 def create_traits(*args, **kwargs):
