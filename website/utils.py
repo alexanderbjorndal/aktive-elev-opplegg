@@ -114,7 +114,14 @@ def get_similar_opplegg(opplegg_id):
 def compare_virtual_opplegg(virtual_opplegg, existing_opplegg):
     """
     Compare a not-yet-saved opplegg (virtual) with an existing one.
+    Ensures that a virtual opplegg is never compared against itself.
     """
+    # If IDs exist and match, skip (defensive, should not happen for virtual)
+    if hasattr(virtual_opplegg, "id") and virtual_opplegg.id is not None:
+        if virtual_opplegg.id == existing_opplegg.id:
+            return 0
+
+    # Compare text and traits
     text_similarity = get_text_similarity(virtual_opplegg.data, existing_opplegg.data)
     trait_similarity = get_trait_similarity(virtual_opplegg, existing_opplegg)
     final_similarity = 0.2 * text_similarity + 0.8 * trait_similarity

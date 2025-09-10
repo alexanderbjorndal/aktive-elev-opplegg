@@ -356,18 +356,11 @@ def live_compare():
 
     # Construct a "virtual opplegg" (not saved in DB)
     virtual_opplegg = Opplegg(name=name, data=description)
-    # Instead of assigning DB objects directly, make copies if needed
-    virtual_opplegg.traits = list(Trait.query.filter(Trait.name.in_(selected_traits)).all())
+    virtual_opplegg.traits = traits
 
-
-    # Compare against all existing opplegg, excluding only the one with the same ID if editing
-    query = Opplegg.query
-    opp_id = data.get("id")  # Pass id from frontend if editing, else None
-    if opp_id:
-        query = query.filter(Opplegg.id != opp_id)
-
+    # Compare against all existing opplegg
     results = []
-    for opplegg in query.all():
+    for opplegg in Opplegg.query.all():
         score = compare_virtual_opplegg(virtual_opplegg, opplegg)
         results.append({
             "id": opplegg.id,
