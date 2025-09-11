@@ -696,6 +696,11 @@ form button:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+#email-step .btn {
+  display: block;
+  margin: 0 auto;
+}
+
 /* Add Media Queries for Small Screens */
 @media only screen and (max-width: 768px) {
   html,
@@ -707,14 +712,15 @@ form button:hover {
   }
 
   .mainclass {
-    margin-left: 5%;
-    margin-right: 5%;
+    margin-left: 0%;
+    margin-right: 0%;
   }
 
   /* Make parent containers full width */
   #opplegg_body,
   .container,
   .three-boxes-container {
+    box-sizing: border-box;
     width: 100%;
     max-width: 100%;
     margin: 0 auto;
@@ -727,7 +733,9 @@ form button:hover {
   }
 
   .three-boxes-container .box {
+    box-sizing: border-box;
     flex: 1 1 100%;
+    max-width: 100%; /* Optional: sets a max width */
     width: 100%; /* ensure full width */
     min-width: 0; /* fix flexbox shrinking issues */
   }
@@ -813,6 +821,11 @@ form button:hover {
   .opplegg-date-user {
     font-size: 10px;
   }
+
+  #email-step .btn {
+    display: block;
+    margin: 0 auto;
+  }
 }
 
 @media only screen and (max-width: 480px) {
@@ -872,5 +885,10 @@ form button:hover {
 
   .opplegg-date-user {
     font-size: 8px;
+  }
+
+  #email-step .btn {
+    display: block;
+    margin: 0 auto;
   }
 }

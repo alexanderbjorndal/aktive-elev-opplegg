@@ -1,52 +1,12 @@
 I dag:
-- Brukersider?
+- Brukersider User profiles showing: uploaded opplegg, comments, favorites, and maybe their “teaching focus” traits.
 - School (barneskole, ungdomsskole, vgs)
 - Database edit (in browser?)
+- User management panel → reset password, deactivate accounts.
+- Analytics dashboard → see most active users, most favorited opplegg, most common traits.
+- Fikse farger på knapper (ikke rød i legg til opplegg)
+- Moderation queue → approve new opplegg before publishing (optional).
 
-Possible Next Steps
-Add pagination or categories if the list of opplegg grows large.
-Add edit/delete opplegg for admins (and maybe for the author).
-Add user profiles (see their opplegg and comments).
-
-Search & Discovery
-Filter & sort → filter opplegg by traits, grade levels, or categories.
-Tag cloud / category browser → a visual way to explore opplegg by traits instead of searching by text.
-
-User Experience
-User profiles → not just a page, but showing: uploaded opplegg, comments, favorites, and maybe their “teaching focus” traits.
-Follow / subscribe → let teachers follow each other or get notified when someone adds a new opplegg.
-Favorited-by counter → each opplegg shows how many teachers favorited it (popularity indicator).
-
-Opplegg Enhancements
-Preview snippet → short description / summary auto-generated from the opplegg text (instead of showing full wall of text everywhere).
-
-Smart Features
-Live similarity check (you mentioned this — very strong idea!).
-Recommendation system → “Based on what you liked or uploaded, here are opplegg you might want to see.”
-AI-assisted tagging → when writing an opplegg, the system suggests traits automatically based on the description.
-
-Layout & Access
-Responsive design (your idea: mobile-friendly layout).
-Export opplegg → let teachers download an opplegg as a nicely formatted PDF to share offline.
-
-Admin Tools
-User management panel → reset password, deactivate accounts, promote users to admin.
-Bulk add approved emails (upload CSV).
-Analytics dashboard → see most active users, most favorited opplegg, most common traits.
-Moderation queue → approve new opplegg before publishing (optional).
-
-
-
-Admin-page:
-- Logs?
-
-Add opplegg:
-- Similar opplegg Neste er å legge inn en livetest når man legger inn nytt opplegg (ikke et must)
-
-User pages:
-- See opplegg
-- See favorites
-- See comments
 
 
 
