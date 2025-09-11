@@ -8,6 +8,8 @@ from website.utils import update_opplegg_similarity
 from . import db
 import json, os
 from collections import defaultdict
+import random, string
+from urllib.parse import quote
 
 views = Blueprint('views', __name__)
 
@@ -317,31 +319,57 @@ def compare_opplegg():
 
     return jsonify(similar_opplegg)
 
-@event.listens_for(User.__table__, 'after_create')
-def create_admin_user(*args, **kwargs):
-    admin_user = User.query.filter_by(email=os.environ.get('ADMIN_EMAIL')).first()
-    if admin_user is None:
-        # Get admin email and password from environment variables
-        admin_email = os.getenv('ADMIN_MAIL')
-        admin_password = os.getenv('ADMIN_PASSWORD')
-        
-        if not admin_email or not admin_password:
-            raise ValueError("Admin email and password must be set in environment variables.")
-        
-        # Create a new admin user with secure details
-        new_user = User(
-            email=admin_email,
-            first_name='Alexander Bjørndal',
-            role='admin', 
-            password=generate_password_hash(admin_password, method='pbkdf2:sha256'),
-            is_email_confirmed=True
-        )
+@views.route("/admin-users")
+@login_required
+def list_users():
+    if current_user.role != 'admin':
+        flash("Du har ikke tilgang til admin-siden.", category="error")
+        return redirect(url_for("views.home"))
 
-        db.session.add(new_user)
-        db.session.commit()
-        print(f"Admin user {admin_email} created successfully.")
-    else:
-        print(f"Admin user {admin_user.email} already exists.")
+    users = User.query.all()
+
+
+    # Get temp password info from query parameters (optional)
+    temp_password_user_id = request.args.get("temp_password_user_id", type=int)
+    temp_password = request.args.get("temp_password", default="")
+
+    return render_template(
+        "admin_users.html",
+        users=users,
+        temp_password_user_id=temp_password_user_id,
+        temp_password=temp_password,
+        user=current_user
+    )
+
+@views.route("/admin/reset-password/<int:user_id>")
+@login_required
+def reset_password(user_id):
+    if current_user.role != 'admin':
+        flash("Du har ikke tilgang til admin-siden.", category="error")
+        return redirect(url_for("views.home"))
+
+    user = User.query.get(user_id)
+    if not user:
+        flash("Bruker ikke funnet.", category="error")
+        return redirect(url_for("views.list_users"))
+
+    # Generate temporary password
+    temp_password = "".join(random.choices(string.ascii_letters + string.digits, k=10))
+    user.password = generate_password_hash(temp_password, method="pbkdf2:sha256")
+    user.is_temp_password = True
+    db.session.commit()
+
+    # Prepare mailto link
+    body_text = (
+        f"Hei {user.first_name}!\n\n"
+        "Ditt passord på nettsiden Opplegg for aktive elever er tilbakestilt. Her er ditt midlertidige passord:\n\n"
+        f"{temp_password}\n\n"
+        "Vennligst logg inn på https://alexandebj.pythonanywhere.com/login med dette passordet og endre det til et selvvalgt passord.\n\n"
+        "Mvh\nAlexander Bjørndal"
+    )
+    mailto_link = f"mailto:{user.email}?subject=Tilbakestilling%20av%20passord&body={quote(body_text)}"
+
+    return redirect(mailto_link)
 
 @views.route('/live-compare', methods=['POST'])
 @login_required
@@ -372,6 +400,32 @@ def live_compare():
     # Sort by similarity and return top 3
     results.sort(key=lambda x: x["similarity_score"], reverse=True)
     return jsonify(results[:3])
+
+@event.listens_for(User.__table__, 'after_create')
+def create_admin_user(*args, **kwargs):
+    admin_user = User.query.filter_by(email=os.environ.get('ADMIN_EMAIL')).first()
+    if admin_user is None:
+        # Get admin email and password from environment variables
+        admin_email = os.getenv('ADMIN_MAIL')
+        admin_password = os.getenv('ADMIN_PASSWORD')
+        
+        if not admin_email or not admin_password:
+            raise ValueError("Admin email and password must be set in environment variables.")
+        
+        # Create a new admin user with secure details
+        new_user = User(
+            email=admin_email,
+            first_name='Alexander Bjørndal',
+            role='admin', 
+            password=generate_password_hash(admin_password, method='pbkdf2:sha256'),
+            is_email_confirmed=True
+        )
+
+        db.session.add(new_user)
+        db.session.commit()
+        print(f"Admin user {admin_email} created successfully.")
+    else:
+        print(f"Admin user {admin_user.email} already exists.")
 
 
 @event.listens_for(Trait.__table__, 'after_create')

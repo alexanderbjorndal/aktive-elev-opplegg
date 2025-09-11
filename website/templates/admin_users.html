@@ -1,0 +1,33 @@
+{% extends "base.html" %} {% block title %}Admin - Brukere{% endblock %} {%
+block content %}
+<h2>Brukeradministrasjon</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Epost</th>
+      <th>Navn</th>
+      <th>Midlertidig passord?</th>
+      <th>Handling</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.id }}</td>
+      <td>{{ user.email }}</td>
+      <td>{{ user.first_name }}</td>
+      <td>{{ "Ja" if user.is_temp_password else "Nei" }}</td>
+      <td>
+        <a
+          href="{{ url_for('views.reset_password', user_id=user.id) }}"
+          class="btn btn-warning"
+        >
+          Reset passord & Send epost
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

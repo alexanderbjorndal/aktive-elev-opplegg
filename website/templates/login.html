@@ -1,7 +1,7 @@
 {% extends "base.html" %} {% block title %}Logg inn{% endblock %} {% block
 content %}
 <div class="login-container">
-  <form method="POST" class="login-form">
+  <form method="POST" class="login-form" id="login-form">
     <h3 align="center">Innlogging</h3>
 
     <div class="form-group">
@@ -26,12 +26,53 @@ content %}
       />
     </div>
 
-    <button type="submit" class="btn btn-primary">Logg inn</button>
+    <div style="text-align: center; margin-top: 0.5rem; margin-bottom: 0.75rem">
+      <a href="#" id="forgot-password-link" style="font-size: 0.95rem">
+        Glemt passord?
+      </a>
+    </div>
+
+    <div style="text-align: center">
+      <button type="submit" class="btn btn-primary">Logg inn</button>
+    </div>
+
     <p></p>
     <p></p>
-    <div class="form-footer">
+    <div class="form-footer" style="text-align: center; margin-top: 1rem">
       <p>Har du ikke en konto? <a href="/sign-up">Lag ny bruker her</a></p>
     </div>
   </form>
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const emailInput = document.getElementById("email");
+    const forgotLink = document.getElementById("forgot-password-link");
+
+    forgotLink.addEventListener("click", function (e) {
+      e.preventDefault();
+      const userEmail = (emailInput.value || "").trim();
+
+      // If no email -> send form to backend so flash can handle it
+      if (!userEmail) {
+        fetch("/forgot-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: "" }),
+        }).then(() => window.location.reload());
+        return;
+      }
+
+      // Otherwise build mailto link
+      const adminEmail = "alexandebj@afk.no";
+      const subject = "Forespørsel om passordreset";
+      const body = `Hei Alexander!\n\nJeg trenger nytt passord for kontoen min med epost: ${userEmail}\n\nVennlig hilsen,\n`;
+      let href = `mailto:${adminEmail}?subject=${encodeURIComponent(
+        subject
+      )}&body=${encodeURIComponent(body)}`;
+      href = href.replace(/%40/g, "@"); // Keep @ readable
+      window.location.href = href;
+    });
+  });
+</script>
 {% endblock %}

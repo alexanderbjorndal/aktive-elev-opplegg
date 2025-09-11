@@ -23,10 +23,16 @@ def login():
                 return redirect(url_for('auth.login'))
             if check_password_hash(user.password, password):
                 login_user(user, remember=True)
+                if user.is_temp_password:
+                    flash("Du må lage et nytt passord før du kan fortsette.", category="error")
+                    return redirect(url_for("auth.reset_temp_password"))
                 flash('Logget inn!', category='success')
                 return redirect(url_for('views.home'))
             else:
-                flash('Feil passord, prøv igjen.', category='error')
+                if user.is_temp_password:
+                    flash("Passordet ditt har blitt tilbakestilt, sjekk eposten din for å finne ditt midlertidige passord.",category="error")
+                else:
+                    flash('Feil passord, prøv igjen.', category='error')
         else:
             flash('Eposten finnes ikke i systemet.', category='error')
 
@@ -72,7 +78,7 @@ def sign_up():
         elif one_time_password != one_time_password_from_env:
             flash('Engangskoden stemmer ikke, ta kontakt på alexandebj@afk.no for å få ny engangskode.', category='error')
         else:
-            new_user = User(email=email, first_name=first_name, password=generate_password_hash(password1, method='pbkdf2:sha256'), is_email_confirmed=True)
+            new_user = User(email=email, first_name=first_name, password=generate_password_hash(password1, method='pbkdf2:sha256'), is_email_confirmed=True, is_temp_password = False)
             db.session.add(new_user)
             db.session.commit()
 
@@ -89,3 +95,39 @@ def check_email():
     email = data.get('email', '').strip().lower()
     approved = bool(ApprovedEmail.query.filter_by(email=email).first())
     return jsonify({"approved": approved})
+
+@auth.route("/forgot-password", methods=["POST"])
+def forgot_password():
+    data = request.get_json()
+    email = data.get("email", "").strip()
+
+    if not email:
+        flash("Du må skrive inn epost før du kan be om nytt passord.", category="error")
+        return "", 400
+
+    # (Optional: here you could log the request in DB for tracking)
+    flash("Vi har laget en epostmal for deg. Klikk på linken igjen for å sende forespørsel.", category="success")
+    return "", 200
+
+@auth.route("/reset-temp-password", methods=["GET", "POST"])
+@login_required
+def reset_temp_password():
+    if not current_user.is_temp_password:
+        return redirect(url_for("views.home"))
+
+    if request.method == "POST":
+        new_password1 = request.form.get("password1")
+        new_password2 = request.form.get("password2")
+
+        if new_password1 != new_password2:
+            flash("Passordene er ikke like.", category="error")
+        elif len(new_password1) < 5:
+            flash("Passordet må inneholde minst fem tegn.", category="error")
+        else:
+            current_user.password = generate_password_hash(new_password1, method="pbkdf2:sha256")
+            current_user.is_temp_password = False
+            db.session.commit()
+            flash("Passord oppdatert! Du kan nå bruke det nye passordet.", category="success")
+            return redirect(url_for("views.home"))
+
+    return render_template("reset_temp_password.html", user=current_user)

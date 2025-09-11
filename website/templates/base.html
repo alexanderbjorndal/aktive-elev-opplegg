@@ -2,13 +2,33 @@
 <html>
   <head class="mainclass">
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/website/static/favicon_io/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/website/static/favicon_io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/website/static/favicon_io/favicon-16x16.png">
-    <link rel="manifest" href="/website/static/favicon_io/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='home.css') }}"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/website/static/favicon_io/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/website/static/favicon_io/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/website/static/favicon_io/favicon-16x16.png"
+    />
+    <link rel="manifest" href="/website/static/favicon_io/site.webmanifest" />
     <title>{% block title %}Home{% endblock %}</title>
   </head>
   <body class="mainclass">
@@ -21,7 +41,12 @@
             >Legg inn nytt opplegg</a
           >
           <a class="nav-item nav-link" id="users" href="./brukere">Brukere</a>
-          <a class="nav-item nav-link" id="add_user" href="./add-bruker">Legg til bruker</a>
+          <a class="nav-item nav-link" id="add_user" href="./add-bruker"
+            >Legg til bruker</a
+          >
+          <a class="nav-item nav-link" id="add_user" href="./admin-users"
+            >Brukeradmin</a
+          >
           <a
             class="nav-item nav-link"
             style="float: right; margin-right: 2%"
@@ -45,8 +70,18 @@
           </a>
           {% else %}
           <a class="nav-item nav-link" id="home" href="/">Hovedside</a>
-          <a class="nav-item nav-link" style="float: right; margin-right: 2%" id="login" href="/login">Logg inn</a>
-          <a class="nav-item nav-link" style="float: right" id="signUp" href="/sign-up"
+          <a
+            class="nav-item nav-link"
+            style="float: right; margin-right: 2%"
+            id="login"
+            href="/login"
+            >Logg inn</a
+          >
+          <a
+            class="nav-item nav-link"
+            style="float: right"
+            id="signUp"
+            href="/sign-up"
             >Lag ny bruker</a
           >
           {% endif %}

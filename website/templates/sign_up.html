@@ -21,14 +21,13 @@ content %}
       </button>
     </form>
     <p id="email-error" style="color: red; display: none; margin-top: 0.5rem">
-      For å lage en bruker må du ha en godkjent epost. Send mail til
+      For å lage en bruker må du ha en godkjent epost.
       <a
         id="email-link"
         href="mailto:alexandebj@afk.no?subject=Forespørsel%20om%20godkjent%20epost"
       >
-        alexandebj@afk.no
+        Trykk her for å godkjenne epost.
       </a>
-      for å få en godkjent epost.
     </p>
   </div>
 
@@ -41,7 +40,7 @@ content %}
       userEmail = userEmail.replace(/%40/g, "@");
       const subject = encodeURIComponent("Forespørsel om å godkjenne epost");
       const body = encodeURIComponent(
-        `Hei Alexander!\n\nJeg vil gjerne ha tilgang til å lage en bruker på nettsiden din "Opplegg for aktive elever" med epostadressen ${userEmail}\n\nJeg forstår at du manuelt må godkjenne meg og at dette kan ta lang tid.`
+        `Hei Alexander!\n\nJeg vil gjerne ha tilgang til å lage en bruker på nettsiden din "Opplegg for aktive elever" med epostadressen ${userEmail}\n\nJeg forstår at du manuelt må godkjenne meg og at dette i noen perioder kan ta lang tid.`
       );
       emailLink.href = `mailto:alexandebj@afk.no?subject=${subject}&body=${body}`;
     });

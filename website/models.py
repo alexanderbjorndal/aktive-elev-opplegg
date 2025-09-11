@@ -41,6 +41,7 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     role = db.Column(db.String(50), default='user')
     is_email_confirmed = db.Column(db.Boolean, default=False)
+    is_temp_password = db.Column(db.Boolean, default=False)
     opplegg = db.relationship('Opplegg')
     favorites = db.relationship('Opplegg', secondary=opplegg_user_favorites, backref='user_favorite')
 
