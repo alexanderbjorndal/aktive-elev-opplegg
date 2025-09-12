@@ -1,5 +1,5 @@
-{% extends "base.html" %}{% block title %}Opplegg for aktive elever{% endblock %} {%
-block content %}
+{% extends "base.html" %}{% block title %}Opplegg for aktive elever{% endblock
+%} {% block content %}
 <h1 align="center">Opplegg for aktive elever</h1>
 <div id="opplegg-color-part">
   <div class="child">
@@ -43,19 +43,26 @@ block content %}
   <div class="child" id="opplegg-details">
     <div class="list-group">
       <div id="search-container" class="flex-container">
-        <button class="button-style" id="toggle-favorites" onclick="toggleFavorites()">Vis kun favoritter</button>
+        <button
+          class="button-style"
+          id="toggle-favorites"
+          onclick="toggleFavorites()"
+        >
+          Vis kun favoritter
+        </button>
         <input type="text" id="search-bar" placeholder="Fritekst søk" />
       </div>
       <!--Loop through all opplegg-->
       {% for opplegg in all_opplegg %}
-      <a href="{{ url_for('views.se_opplegg', opplegg_id=opplegg.id) }}"
-      class="list-group-item"
-      data-traits="{{ ','.join(opplegg.traits|map(attribute='name')) }}"
-      data-title="{{ opplegg.name }}"
-      data-description="{{ opplegg.data }}"
-      data-comments="{{ opplegg.comments_text }}"
-      data-is-favorite="{{ 'true' if current_user.is_authenticated and opplegg in current_user.favorites else 'false' }}"
-      id="opplegg-{{ opplegg.id }}"
+      <a
+        href="{{ url_for('views.se_opplegg', opplegg_id=opplegg.id) }}"
+        class="list-group-item"
+        data-traits="{{ ','.join(opplegg.traits|map(attribute='name')) }}"
+        data-title="{{ opplegg.name }}"
+        data-description="{{ opplegg.data }}"
+        data-comments="{{ opplegg.comments_text }}"
+        data-is-favorite="{{ 'true' if current_user.is_authenticated and opplegg in current_user.favorites else 'false' }}"
+        id="opplegg-{{ opplegg.id }}"
       >
         <!-- Title -->
         <div class="opplegg-title">{{ opplegg.name }}</div>
@@ -102,7 +109,12 @@ block content %}
           value="0"
         />
 
-        <input type="hidden" id="scrollPosition" name="scrollPosition" value="0" />
+        <input
+          type="hidden"
+          id="scrollPosition"
+          name="scrollPosition"
+          value="0"
+        />
 
         <!--Delete button (change to edit later)-->
         {% if user.role == 'admin' %}
@@ -122,25 +134,25 @@ block content %}
         <div class="opplegg-date-user">
           <!-- Heart and favorite count -->
           <div class="favorite-count">
-            <i class="fas fa-heart"></i> <!-- Font Awesome heart icon -->
-            <span class="favorite-number">{{ opplegg_favorites_counts[opplegg.id] }}</span>
+            <i class="fas fa-heart"></i>
+            <!-- Font Awesome heart icon -->
+            <span class="favorite-number"
+              >{{ opplegg_favorites_counts[opplegg.id] }}</span
+            >
           </div>
-
 
           <!-- Comment count bubble -->
           <div class="comment-count">
-            <span class="comment-bubble">{{ opplegg_comment_counts[opplegg.id] }}</span>
+            <span class="comment-bubble"
+              >{{ opplegg_comment_counts[opplegg.id] }}</span
+            >
           </div>
 
           <!-- Display date and user -->
-          Lagt til {{ opplegg.date.strftime("%d.%m.%y") }} av:
-          {% for u in users %}
-            {% if u[0] == opplegg.user_id %}
-              {{ u[1] }}
-            {% endif %}
-          {% endfor %}
+          Lagt til {{ opplegg.date.strftime("%d.%m.%y") }} av: {% for u in users
+          %} {% if u[0] == opplegg.user_id %} {{ u[1] }} {% endif %} {% endfor
+          %}
         </div>
-
       </a>
       {% endfor %}
     </div>

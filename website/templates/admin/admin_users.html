@@ -20,7 +20,7 @@ block content %}
       <td>{{ "Ja" if user.is_temp_password else "Nei" }}</td>
       <td>
         <a
-          href="{{ url_for('views.reset_password', user_id=user.id) }}"
+          href="{{ url_for('admin.reset_password', user_id=user.id) }}"
           class="btn btn-warning"
         >
           Reset passord & Send epost

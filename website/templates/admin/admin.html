@@ -1,0 +1,46 @@
+{% extends "base.html" %} {% block title %}Admin Dashboard{% endblock %} {%
+block content %}
+
+<div class="admin-buttons" style="margin-bottom: 2rem">
+  <a class="btn btn-primary" href="{{ url_for('admin.brukere') }}">Brukere</a>
+  <a class="btn btn-primary" href="{{ url_for('admin.add_bruker') }}"
+    >Legg til bruker</a
+  >
+  <a class="btn btn-primary" href="{{ url_for('admin.admin_users') }}"
+    >Brukeradmin</a
+  >
+</div>
+
+<h2>Admin Analytics</h2>
+
+<p>Total users: {{ total_users }}</p>
+<p>Total opplegg: {{ total_opplegg }}</p>
+
+<h3>Most common traits:</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Trait</th>
+      <th>Number of opplegg</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for trait_name, count in trait_counts %}
+    <tr>
+      <td>{{ trait_name }}</td>
+      <td>{{ count }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- Optional: login activity
+<h3>Last logins:</h3>
+<ul>
+  {% for login in last_logins %}
+    <li>{{ login.user_id }} at {{ login.timestamp }}</li>
+  {% endfor %}
+</ul>
+-->
+
+{% endblock %}

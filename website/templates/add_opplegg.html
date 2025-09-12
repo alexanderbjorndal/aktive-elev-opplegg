@@ -1,6 +1,9 @@
 {% extends "base.html" %}{% block title %}Legg inn nytt opplegg{% endblock %} {%
 block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='legg_inn_nytt_opplegg.css') }}" />
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='legg_inn_nytt_opplegg.css') }}"
+/>
 <div id="opplegg_body">
   <div id="centerer">
     <h1 align="center">Legg inn nytt opplegg</h1>
@@ -30,9 +33,9 @@ block content %}
         required
       ></textarea>
 
-<div class="form-footer">
-      <p>Velg alle egenskapene opplegget <b>kan</b> ha</p>
-    </div>
+      <div class="form-footer">
+        <p>Velg alle egenskapene opplegget <b>kan</b> ha</p>
+      </div>
 
       <!-- Dynamic Fieldsets for Traits -->
       <ul class="ks-cboxtags">
@@ -45,7 +48,7 @@ block content %}
               <li data-tooltip="{{ trait.forklaring }}">
                 <input
                   type="checkbox"
-                  name="tag"
+                  name="tags"
                   id="checkbox{{ trait.id }}"
                   value="{{ trait.name }}"
                 />
@@ -57,22 +60,29 @@ block content %}
         </fieldset>
       </ul>
       {% endfor %}
-      <div id="similarity-results" style="margin-top: 2rem;">
-      <h2>Opplegg som ligner:</h2>
-      <div id="similarity-warning" style="margin-bottom: 1rem;"></div>
-      <div id="similarity-list">Begynn å skrive eller velge egenskaper for å få en sammenligning</div>
+      <div id="similarity-results" style="margin-top: 2rem">
+        <h2>Opplegg som ligner:</h2>
+        <div id="similarity-warning" style="margin-bottom: 1rem"></div>
+        <div id="similarity-list">
+          Begynn å skrive eller velge egenskaper for å få en sammenligning
+        </div>
       </div>
       <div align="center">
-        <button type="submit" onsubmit="disableSubmitButton()" class="button-style" style="margin-top: 2rem">
+        <button
+          type="submit"
+          onsubmit="disableSubmitButton()"
+          class="button-style"
+          style="margin-top: 2rem"
+        >
           Large opplegget
         </button>
       </div>
     </form>
     <script>
       function disableSubmitButton() {
-          document.getElementById('submit-button').disabled = true;
+        document.getElementById("submit-button").disabled = true;
       }
-</script>
+    </script>
   </div>
 </div>
 {% endblock %}

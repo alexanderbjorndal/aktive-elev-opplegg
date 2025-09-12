@@ -1,12 +1,10 @@
-I dag:
+Legges til:
 - Brukersider User profiles showing: uploaded opplegg, comments, favorites, and maybe their “teaching focus” traits.
 - School (barneskole, ungdomsskole, vgs)
 - Database edit (in browser?)
 - User management panel → deactivate accounts.
-- Analytics dashboard → see most active users, most favorited opplegg, most common traits.
-- Fikse farger på knapper (ikke rød i legg til opplegg)
+- More analytics
 - Moderation queue → approve new opplegg before publishing (optional).
-
 
 
 
@@ -17,6 +15,7 @@ Admin:
 - Users
 - Add approved users
 - Reset password
+- Analytics dashboard → see most active users, most favorited opplegg, most common traits.
 
 Main page:
 - Number of favorites
@@ -31,6 +30,7 @@ Se opplegg:
 
 Add opplegg:
 - Livetest
+- Fikse farger på knapper (ikke rød i legg til opplegg)
 
 New user:
 - Auto epost

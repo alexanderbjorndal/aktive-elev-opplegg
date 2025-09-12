@@ -2,14 +2,12 @@ from flask import Blueprint, render_template, request, flash, jsonify, redirect,
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from sqlalchemy import event
-from .models import Opplegg, Trait, User, Comment, ApprovedEmail
+from .models import Opplegg, Trait, User, Comment
 from .utils import get_similar_opplegg, compare_virtual_opplegg
 from website.utils import update_opplegg_similarity
 from . import db
-import json, os
+import os
 from collections import defaultdict
-import random, string
-from urllib.parse import quote
 
 views = Blueprint('views', __name__)
 
@@ -46,7 +44,6 @@ def home():
     for o in opplegg:
         o.comments_text = ', '.join(getattr(c, 'content') for c in o.comments if getattr(c, 'content'))
 
-
     # Then pass to render_template
     return render_template(
         "home.html",
@@ -58,7 +55,6 @@ def home():
         opplegg_comment_counts=opplegg_comment_counts,
         opplegg_favorites_counts=opplegg_favorites_counts,
     )
-
 
 @views.route('/add-opplegg', methods=['GET', 'POST'])
 @login_required
@@ -76,10 +72,12 @@ def add_opplegg():
             flash('For kort beskrivelse', category='error')
         else:
             new_name = Opplegg(name=name, data=data ,user_id=current_user.id)
-            for mark in request.form.getlist('tag'):
+            db.session.add(new_name)  # add first!
+            for mark in request.form.getlist('tags'):
                 if mark:
                     new_trait = db.session.query(Trait).filter_by(name=mark).first()
-                    new_name.traits.append(new_trait)
+                    if new_trait:
+                        new_name.traits.append(new_trait)
             db.session.add(new_name)
             if any(trait is None for trait in new_name.traits):
                 print(new_name.traits)
@@ -94,71 +92,6 @@ def add_opplegg():
         return redirect(url_for('views.home'))
 
     return render_template("add_opplegg.html", user=current_user, klasse_groups=klasse_groups)
-
-@views.route('/add-bruker', methods=['GET', 'POST'])
-@login_required
-def add_bruker():
-    if current_user.role != 'admin':
-        flash("Du har ikke tilgang til denne siden.", category="error")
-        return redirect(url_for('views.home'))
-
-    if request.method == 'POST':
-        email = request.form.get('email')
-        if not email:
-            flash("Du må skrive inn en e-post.", category="error")
-        else:
-            existing = ApprovedEmail.query.filter_by(email=email).first()
-            if existing:
-                flash("Denne e-posten er allerede i listen.", category="error")
-            else:
-                new_email = ApprovedEmail(email=email)
-                db.session.add(new_email)
-                db.session.commit()
-                flash("E-posten ble lagt til i listen over godkjente brukere.", category="success")
-        return redirect(url_for('views.add_bruker'))
-
-    # Get all approved emails and check if each has a user
-    approved_emails = ApprovedEmail.query.all()
-    email_status = []
-    for approved in approved_emails:
-        user = User.query.filter_by(email=approved.email).first()
-        email_status.append({
-            "id": approved.id,
-            "email": approved.email,
-            "is_used": user is not None,
-            "user_name": user.first_name if user else None
-        })
-
-    return render_template("add_bruker.html", user=current_user, email_status=email_status)
-
-@views.route('/delete-approved-email/<int:approved_id>', methods=['POST'])
-@login_required
-def delete_approved_email(approved_id):
-    if current_user.role != 'admin':
-        flash("Du har ikke tilgang til denne funksjonen.", category="error")
-        return redirect(url_for('views.home'))
-
-    approved = ApprovedEmail.query.get_or_404(approved_id)
-    db.session.delete(approved)
-    db.session.commit()
-    flash(f"E-posten {approved.email} ble slettet fra listen.", category="success")
-    return redirect(url_for('views.add_bruker'))
-
-
-@views.route('/delete-opplegg', methods=['POST'])
-@login_required
-def delete_opplegg():
-    if current_user.role != 'admin':
-        abort(403) 
-
-    opplegg = json.loads(request.data)
-    oppleggId = opplegg['oppleggId']
-    opplegg = Opplegg.query.get(oppleggId)
-    if opplegg:
-        Comment.query.filter_by(opplegg_id=opplegg.id).delete()
-        db.session.delete(opplegg)
-        db.session.commit()
-    return jsonify({})
 
 @views.route('/toggle-favorite', methods=['POST'])
 @login_required
@@ -224,7 +157,7 @@ def se_opplegg():
         data = request.form.get('data')
         marked = []
         if len(data) < 1:
-            flash('For kort beskrivelse', category='error')
+            flash('For kort', category='error')
         else:
             # Update the existing Opplegg
             opplegg.name = name
@@ -259,51 +192,6 @@ def se_opplegg():
         user_list=user_list
     )
 
-@views.route('/delete-comment', methods=['POST'])
-def delete_comment():
-    if current_user.role != 'admin':
-        abort(403)  # Only admins can delete comments
-
-    comment_id = request.form.get('comment_id')  # Get the comment ID from the form
-    opplegg_id = request.form.get('opplegg_id')  # Get the opplegg ID (optional, for redirect)
-
-    # Fetch the comment to be deleted
-    comment = Comment.query.get(comment_id)
-    
-    if comment:
-        # Delete the comment from the database
-        db.session.delete(comment)
-        db.session.commit()
-        flash('Kommentar slettet', category='success')
-    else:
-        flash('Kommentar ikke funnet', category='error')
-
-    # Redirect back to the opplegg page
-    return redirect(url_for('views.se_opplegg', opplegg_id=opplegg_id))
-
-@views.route('/brukere', methods=['GET'])
-@login_required
-def admin_users():
-    # Ensure the current user is an admin
-    if current_user.role != 'admin':
-        abort(403)  # Forbidden access if the user is not an admin
-    
-    # Get all users from the database
-    users = User.query.all()
-
-    # Fetch opplegg and favorites for each user (with relationships)
-    user_data = []
-    for user in users:
-        user_opplegg = user.opplegg  # All opplegg linked to the user
-        user_favorites = user.favorites  # All favorites linked to the user
-        user_data.append({
-            'user': user,
-            'opplegg': user_opplegg,
-            'favorites': user_favorites
-        })
-    
-    return render_template('brukere.html', user=current_user, user_data=user_data)
-
 @views.route('/compare', methods=['GET', 'POST'])
 def compare_opplegg():
     opplegg_id = request.args.get('opplegg_id')
@@ -318,58 +206,6 @@ def compare_opplegg():
     similar_opplegg = get_similar_opplegg(opplegg.id)
 
     return jsonify(similar_opplegg)
-
-@views.route("/admin-users")
-@login_required
-def list_users():
-    if current_user.role != 'admin':
-        flash("Du har ikke tilgang til admin-siden.", category="error")
-        return redirect(url_for("views.home"))
-
-    users = User.query.all()
-
-
-    # Get temp password info from query parameters (optional)
-    temp_password_user_id = request.args.get("temp_password_user_id", type=int)
-    temp_password = request.args.get("temp_password", default="")
-
-    return render_template(
-        "admin_users.html",
-        users=users,
-        temp_password_user_id=temp_password_user_id,
-        temp_password=temp_password,
-        user=current_user
-    )
-
-@views.route("/admin/reset-password/<int:user_id>")
-@login_required
-def reset_password(user_id):
-    if current_user.role != 'admin':
-        flash("Du har ikke tilgang til admin-siden.", category="error")
-        return redirect(url_for("views.home"))
-
-    user = User.query.get(user_id)
-    if not user:
-        flash("Bruker ikke funnet.", category="error")
-        return redirect(url_for("views.list_users"))
-
-    # Generate temporary password
-    temp_password = "".join(random.choices(string.ascii_letters + string.digits, k=10))
-    user.password = generate_password_hash(temp_password, method="pbkdf2:sha256")
-    user.is_temp_password = True
-    db.session.commit()
-
-    # Prepare mailto link
-    body_text = (
-        f"Hei {user.first_name}!\n\n"
-        "Ditt passord på nettsiden Opplegg for aktive elever er tilbakestilt. Her er ditt midlertidige passord:\n\n"
-        f"{temp_password}\n\n"
-        "Vennligst logg inn på https://alexandebj.pythonanywhere.com/login med dette passordet og endre det til et selvvalgt passord.\n\n"
-        "Mvh\nAlexander Bjørndal"
-    )
-    mailto_link = f"mailto:{user.email}?subject=Tilbakestilling%20av%20passord&body={quote(body_text)}"
-
-    return redirect(mailto_link)
 
 @views.route('/live-compare', methods=['POST'])
 @login_required
@@ -388,18 +224,20 @@ def live_compare():
 
     # Compare against all existing opplegg
     results = []
-    for opplegg in Opplegg.query.all():
-        score = compare_virtual_opplegg(virtual_opplegg, opplegg)
-        results.append({
-            "id": opplegg.id,
-            "name": opplegg.name,
-            "data": opplegg.data[:150] + "..." if len(opplegg.data) > 150 else opplegg.data,
-            "similarity_score": score
-        })
+    with db.session.no_autoflush:
+        for opplegg in Opplegg.query.all():
+            score = compare_virtual_opplegg(virtual_opplegg, opplegg)
+            results.append({
+                "id": opplegg.id,
+                "name": opplegg.name,
+                "data": opplegg.data[:150] + "..." if len(opplegg.data) > 150 else opplegg.data,
+                "similarity_score": score
+            })
 
     # Sort by similarity and return top 3
     results.sort(key=lambda x: x["similarity_score"], reverse=True)
     return jsonify(results[:3])
+
 
 @event.listens_for(User.__table__, 'after_create')
 def create_admin_user(*args, **kwargs):
@@ -471,6 +309,6 @@ def create_traits(*args, **kwargs):
     db.session.add(Trait(name='Kritisk tenkning', klasse='Hensikt', forklaring='Elevene må tenke kristisk i dette opplegget'))
     db.session.add(Trait(name='Oppstart', klasse='Hensikt', forklaring='Opplegget egner seg til oppstart av timen eller tema'))
     db.session.add(Trait(name='Oppsummere', klasse='Hensikt', forklaring='Opplegget egner seg til oppsummering av timen eller tema'))
-    db.session.add(Trait(name='Eksamen', klasse='Hensikt', forklaring='Egner seg eksamenstrening'))
+    db.session.add(Trait(name='Eksamen', klasse='Hensikt', forklaring='Egner seg til eksamenstrening'))
 
     db.session.commit()

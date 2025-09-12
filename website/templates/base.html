@@ -37,15 +37,16 @@
         <div style="margin-left: 2%">
           {% if user.role == 'admin' %}
           <a class="nav-item nav-link" id="home" href="/">Hovedside</a>
-          <a class="nav-item nav-link" id="add_opplegg" href="./add-opplegg"
+          <a
+            class="nav-item nav-link"
+            id="add_opplegg"
+            href="{{ url_for('views.add_opplegg') }}"
             >Legg inn nytt opplegg</a
-          >
-          <a class="nav-item nav-link" id="users" href="./brukere">Brukere</a>
-          <a class="nav-item nav-link" id="add_user" href="./add-bruker"
-            >Legg til bruker</a
-          >
-          <a class="nav-item nav-link" id="add_user" href="./admin-users"
-            >Brukeradmin</a
+          ><a
+            class="nav-item nav-link"
+            id="admin_dashboard"
+            href="{{ url_for('admin.admin') }}"
+            >Admin</a
           >
           <a
             class="nav-item nav-link"

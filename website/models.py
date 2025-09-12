@@ -1,7 +1,7 @@
 from . import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 opplegg_traits = db.Table('opplegg_traits',
@@ -55,7 +55,7 @@ class Comment(db.Model):
     opplegg_id = db.Column(db.Integer, db.ForeignKey('opplegg.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     content = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.now() + timedelta(hours=2))
     
     # Use back_populates to establish the bidirectional relationship
     opplegg = db.relationship('Opplegg', back_populates='comments')

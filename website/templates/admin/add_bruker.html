@@ -1,6 +1,5 @@
-{% extends "base.html" %}
-{% block title %}Legg til godkjent bruker{% endblock %}
-{% block content %}
+{% extends "base.html" %} {% block title %}Legg til godkjent bruker{% endblock
+%} {% block content %}
 <div class="container">
   <h1 align="center">Legg til godkjent e-post</h1>
 
@@ -30,13 +29,16 @@
         <td>{{ entry.email }}</td>
         <td>
           {% if entry.is_used %}
-            <span style="color:green;">Brukt av {{ entry.user_name }}</span>
+          <span style="color: green">Brukt av {{ entry.user_name }}</span>
           {% else %}
-            <span style="color:red;">Ikke aktivert</span>
+          <span style="color: red">Ikke aktivert</span>
           {% endif %}
         </td>
         <td>
-          <form method="POST" action="{{ url_for('views.delete_approved_email', approved_id=entry.id) }}">
+          <form
+            method="POST"
+            action="{{ url_for('admin.delete_approved_email', approved_id=entry.id) }}"
+          >
             <button type="submit" class="btn btn-danger btn-sm">Slett</button>
           </form>
         </td>
