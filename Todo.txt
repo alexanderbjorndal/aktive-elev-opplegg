@@ -5,6 +5,7 @@ Legges til:
 - User management panel → deactivate accounts.
 - More analytics
 - Moderation queue → approve new opplegg before publishing (optional).
+- Fikse adminsiden med knapper osv.
 
 
 
