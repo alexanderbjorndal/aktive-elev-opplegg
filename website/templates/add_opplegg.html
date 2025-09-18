@@ -38,27 +38,25 @@ block content %}
       </div>
 
       <!-- Dynamic Fieldsets for Traits -->
-      <ul class="ks-cboxtags">
-        {% for klasse, traits in klasse_groups.items() %}
-        <fieldset>
-          <legend>{{ klasse }}</legend>
-          <div class="container">
-            <ul class="ks-cboxtags">
-              {% for trait in traits %}
-              <li data-tooltip="{{ trait.forklaring }}">
-                <input
-                  type="checkbox"
-                  name="tags"
-                  id="checkbox{{ trait.id }}"
-                  value="{{ trait.name }}"
-                />
-                <label for="checkbox{{ trait.id }}">{{ trait.name }}</label>
-              </li>
-              {% endfor %}
-            </ul>
-          </div>
-        </fieldset>
-      </ul>
+      {% for klasse, traits in klasse_groups.items() %}
+      <fieldset>
+        <legend>{{ klasse }}</legend>
+        <div class="container">
+          <ul class="ks-cboxtags">
+            {% for trait in traits %}
+            <li data-tooltip="{{ trait.forklaring }}">
+              <input
+                type="checkbox"
+                name="tags"
+                id="checkbox{{ trait.id }}"
+                value="{{ trait.name }}"
+              />
+              <label for="checkbox{{ trait.id }}">{{ trait.name }}</label>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </fieldset>
       {% endfor %}
       <div id="similarity-results" style="margin-top: 2rem">
         <h2>Opplegg som ligner:</h2>
