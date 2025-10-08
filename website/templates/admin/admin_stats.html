@@ -1,0 +1,18 @@
+{% extends "base.html" %} {% block content %}
+<h1>Visitor Statistics</h1>
+<p>Total unique visitors: {{ total_visitors }}</p>
+
+<h2>Recent visitors</h2>
+<table>
+  <tr>
+    <th>IP</th>
+    <th>Last seen</th>
+  </tr>
+  {% for v in recent_visitors %}
+  <tr>
+    <td>{{ v.ip }}</td>
+    <td>{{ v.last_seen.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock %}

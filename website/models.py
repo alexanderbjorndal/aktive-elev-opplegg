@@ -78,3 +78,8 @@ class ApprovedEmail(db.Model):
     __tablename__ = 'approved_emails'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True, nullable=False)
+
+class Visitor(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(100))
+    last_seen = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)

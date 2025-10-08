@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash, jsonify, redirect, url_for, abort
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
-from .models import Opplegg, Trait, User, Comment, ApprovedEmail
+from .models import Opplegg, Trait, User, Comment, ApprovedEmail, Visitor
 from . import db
 import json
 import random, string
@@ -202,5 +202,22 @@ def admin_users():
         users=users,
         temp_password_user_id=temp_password_user_id,
         temp_password=temp_password,
+        user=current_user
+    )
+
+@admin_bp.route('/stats')
+@login_required
+def admin_stats():
+    if current_user.role != 'admin':
+        abort(403)
+    
+    # Example stats (expand later)
+    total_users = User.query.count()
+    total_visitors = Visitor.query.count()
+    
+    return render_template(
+        'admin/admin_stats.html',
+        total_users=total_users,
+        total_visitors=total_visitors,
         user=current_user
     )

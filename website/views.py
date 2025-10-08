@@ -2,12 +2,13 @@ from flask import Blueprint, render_template, request, flash, jsonify, redirect,
 from flask_login import login_required, current_user
 from werkzeug.security import generate_password_hash
 from sqlalchemy import event
-from .models import Opplegg, Trait, User, Comment
+from .models import Opplegg, Trait, User, Comment, Visitor
 from .utils import get_similar_opplegg, compare_virtual_opplegg
 from website.utils import update_opplegg_similarity
 from . import db
 import os
 from collections import defaultdict
+from datetime import datetime
 
 views = Blueprint('views', __name__)
 
@@ -238,6 +239,16 @@ def live_compare():
     results.sort(key=lambda x: x["similarity_score"], reverse=True)
     return jsonify(results[:3])
 
+@views.before_app_request
+def track_visitor():
+    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    if ip:
+        visitor = Visitor.query.filter_by(ip=ip).first()
+        if visitor:
+            visitor.last_seen = datetime.now()
+        else:
+            db.session.add(Visitor(ip=ip))
+        db.session.commit()
 
 @event.listens_for(User.__table__, 'after_create')
 def create_admin_user(*args, **kwargs):
