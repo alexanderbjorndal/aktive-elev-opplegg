@@ -211,13 +211,17 @@ def admin_stats():
     if current_user.role != 'admin':
         abort(403)
     
-    # Example stats (expand later)
     total_users = User.query.count()
     total_visitors = Visitor.query.count()
+
+    # Fetch recent visitors (most recent first)
+    recent_visitors = Visitor.query.order_by(Visitor.last_seen.desc()).limit(500).all()
     
     return render_template(
         'admin/admin_stats.html',
         total_users=total_users,
         total_visitors=total_visitors,
+        recent_visitors=recent_visitors,
         user=current_user
     )
+
