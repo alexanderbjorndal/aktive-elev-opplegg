@@ -7,11 +7,15 @@
   <tr>
     <th>IP</th>
     <th>Last seen</th>
+    <th>Visits</th>
+    <th>User Type</th>
   </tr>
   {% for v in recent_visitors %}
   <tr>
     <td>{{ v.ip }}</td>
     <td>{{ v.last_seen.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+    <td>{{ v.visit_count }}</td>
+    <td>{{ v.user_type }}</td>
   </tr>
   {% endfor %}
 </table>

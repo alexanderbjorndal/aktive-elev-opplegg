@@ -241,14 +241,34 @@ def live_compare():
 
 @views.before_app_request
 def track_visitor():
-    ip = request.headers.get('X-Forwarded-For', request.remote_addr)
-    if ip:
-        visitor = Visitor.query.filter_by(ip=ip).first()
-        if visitor:
-            visitor.last_seen = datetime.now()
-        else:
-            db.session.add(Visitor(ip=ip))
-        db.session.commit()
+    if not request.path.startswith('/admin'):  # Skip admin pages
+        ip = request.headers.get('X-Forwarded-For', request.remote_addr)
+    ua = request.user_agent.string.lower()
+
+    # Categorize user
+    if "facebookexternalhit" in ua:
+        user_type = "facebook crawler"
+    elif "mobile" in ua or "iphone" in ua or "android" in ua:
+        user_type = "mobile"
+    elif "ipad" in ua or "tablet" in ua:
+        user_type = "pad"
+    elif ip == "your.own.ip.here":
+        user_type = "myself"
+    else:
+        user_type = "computer"
+
+    visitor = Visitor.query.filter_by(ip=ip).first()
+    if visitor:
+        visitor.last_seen = datetime.utcnow()
+        visitor.visit_count += 1
+        visitor.user_type = user_type
+    else:
+        visitor = Visitor(ip=ip, last_seen=datetime.utcnow(), user_type=user_type)
+        db.session.add(visitor)
+
+    db.session.commit()
+
+    
 
 @event.listens_for(User.__table__, 'after_create')
 def create_admin_user(*args, **kwargs):

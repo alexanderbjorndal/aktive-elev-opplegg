@@ -83,3 +83,8 @@ class Visitor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     ip = db.Column(db.String(100))
     last_seen = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    visit_count = db.Column(db.Integer, default=1)
+    user_type = db.Column(db.String(50))
+
+    def __repr__(self):
+        return f"<Visitor {self.ip} ({self.user_type}) - {self.visit_count} visits>"
