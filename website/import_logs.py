@@ -1,4 +1,11 @@
 # import_logs.py
+import sys
+import types
+sys.modules['sklearn'] = types.ModuleType("sklearn")
+sys.modules['sklearn.feature_extraction'] = types.ModuleType("feature_extraction")
+sys.modules['sklearn.feature_extraction.text'] = types.ModuleType("text")
+sys.modules['sklearn.metrics'] = types.ModuleType("metrics")
+sys.modules['sklearn.metrics.pairwise'] = types.ModuleType("pairwise")
 import re
 from datetime import datetime
 from website import create_app, db
