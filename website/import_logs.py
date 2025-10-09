@@ -1,8 +1,8 @@
 # import_logs.py
 import re
 from datetime import datetime
-from website import create_app, db
-from website.models import Visitor
+from . import create_app, db
+from models import Visitor
 
 app = create_app()
 app.app_context().push()
