@@ -1,11 +1,34 @@
 # import_logs.py
 import sys
 import types
-sys.modules['sklearn'] = types.ModuleType("sklearn")
-sys.modules['sklearn.feature_extraction'] = types.ModuleType("feature_extraction")
-sys.modules['sklearn.feature_extraction.text'] = types.ModuleType("text")
-sys.modules['sklearn.metrics'] = types.ModuleType("metrics")
-sys.modules['sklearn.metrics.pairwise'] = types.ModuleType("pairwise")
+
+# Create fake sklearn modules to satisfy imports
+sklearn = types.ModuleType("sklearn")
+feature_extraction = types.ModuleType("feature_extraction")
+text = types.ModuleType("text")
+metrics = types.ModuleType("metrics")
+pairwise = types.ModuleType("pairwise")
+
+# Dummy replacements for the parts of sklearn your utils.py imports
+class DummyTfidfVectorizer:
+    def fit_transform(self, *args, **kwargs):
+        return []
+    def transform(self, *args, **kwargs):
+        return []
+
+def dummy_cosine_similarity(*args, **kwargs):
+    return []
+
+# Attach fake contents
+text.TfidfVectorizer = DummyTfidfVectorizer
+pairwise.cosine_similarity = dummy_cosine_similarity
+
+# Register all mocks
+sys.modules["sklearn"] = sklearn
+sys.modules["sklearn.feature_extraction"] = feature_extraction
+sys.modules["sklearn.feature_extraction.text"] = text
+sys.modules["sklearn.metrics"] = metrics
+sys.modules["sklearn.metrics.pairwise"] = pairwise
 import re
 from datetime import datetime
 from website import create_app, db
