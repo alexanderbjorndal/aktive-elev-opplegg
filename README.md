@@ -12,6 +12,15 @@ I pythonanywhere bash:
 git pull
 Deretter reload website
 
+Oppskrift for å oppdatere databasen i PythonAnywhere:
+Etter git pull
+export FLASK_APP=website
+flask db upgrade
+For å sjekke om det funket:
+sqlite3 instance/database.db
+.tables
+.exit eller CTRL D
+
 Oppskrift for å endre databasen i PythonAnywhere:
 08:34 ~/aktive-elev-opplegg (main)$ python
 
