@@ -1,3 +1,30 @@
+import sys, types
+
+# Mock sklearn if it's missing
+if "sklearn" not in sys.modules:
+    sklearn = types.ModuleType("sklearn")
+    feature_extraction = types.ModuleType("feature_extraction")
+    text = types.ModuleType("text")
+    metrics = types.ModuleType("metrics")
+    pairwise = types.ModuleType("pairwise")
+
+    class DummyTfidfVectorizer:
+        def fit_transform(self, *args, **kwargs): return []
+        def transform(self, *args, **kwargs): return []
+
+    def dummy_cosine_similarity(*args, **kwargs): return []
+
+    text.TfidfVectorizer = DummyTfidfVectorizer
+    pairwise.cosine_similarity = dummy_cosine_similarity
+
+    sys.modules["sklearn"] = sklearn
+    sys.modules["sklearn.feature_extraction"] = feature_extraction
+    sys.modules["sklearn.feature_extraction.text"] = text
+    sys.modules["sklearn.metrics"] = metrics
+    sys.modules["sklearn.metrics.pairwise"] = pairwise
+
+
+
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from os import path
