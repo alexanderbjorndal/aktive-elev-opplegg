@@ -1,4 +1,16 @@
 {% extends "base.html" %} {% block content %}
+<div class="admin-buttons" style="margin-bottom: 2rem">
+  <a class="btn btn-primary" href="{{ url_for('admin.brukere') }}">Brukere</a>
+  <a class="btn btn-primary" href="{{ url_for('admin.add_bruker') }}"
+    >Legg til bruker</a
+  >
+  <a class="btn btn-primary" href="{{ url_for('admin.admin_users') }}"
+    >Brukeradmin</a
+  >
+  <a class="btn btn-primary" href="{{ url_for('admin.admin_stats') }}"
+    >Brukerhistorikk</a
+  >
+</div>
 <h1>Visitor Statistics</h1>
 <p>Total unique visitors: {{ total_visitors }}</p>
 
@@ -13,9 +25,11 @@
   {% for v in recent_visitors %}
   <tr>
     <td>{{ v.ip }}</td>
-    <td>{{ v.last_seen.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-    <td>{{ v.visit_count }}</td>
-    <td>{{ v.user_type }}</td>
+    <td>
+      {{ v.last_seen.strftime('%Y-%m-%d %H:%M:%S') if v.last_seen else 'NULL' }}
+    </td>
+    <td>{{ v.visit_count if v.visit_count is not none else 'NULL' }}</td>
+    <td>{{ v.user_type if v.user_type is not none else 'NULL' }}</td>
   </tr>
   {% endfor %}
 </table>

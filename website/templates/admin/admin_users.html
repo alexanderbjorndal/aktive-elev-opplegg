@@ -1,5 +1,17 @@
 {% extends "base.html" %} {% block title %}Admin - Brukere{% endblock %} {%
 block content %}
+<div class="admin-buttons" style="margin-bottom: 2rem">
+  <a class="btn btn-primary" href="{{ url_for('admin.brukere') }}">Brukere</a>
+  <a class="btn btn-primary" href="{{ url_for('admin.add_bruker') }}"
+    >Legg til bruker</a
+  >
+  <a class="btn btn-primary" href="{{ url_for('admin.admin_users') }}"
+    >Brukeradmin</a
+  >
+  <a class="btn btn-primary" href="{{ url_for('admin.admin_stats') }}"
+    >Brukerhistorikk</a
+  >
+</div>
 <h2>Brukeradministrasjon</h2>
 <table class="table">
   <thead>
