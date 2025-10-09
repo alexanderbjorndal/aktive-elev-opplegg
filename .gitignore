@@ -3,3 +3,5 @@ venv/
 instance/sendgrid.env
 sendgrid.env
 .env
+instance/database.db
+*.db
