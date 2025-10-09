@@ -85,6 +85,14 @@ class Visitor(db.Model):
     last_seen = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     visit_count = db.Column(db.Integer, default=1)
     user_type = db.Column(db.String(50))
+    visits = db.relationship('VisitLog', backref='visitor', lazy=True)
 
     def __repr__(self):
         return f"<Visitor {self.ip} ({self.user_type}) - {self.visit_count} visits>"
+    
+class VisitLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    visitor_id = db.Column(db.Integer, db.ForeignKey('visitor.id'), nullable=False)
+    url = db.Column(db.String(500))
+    opplegg_id = db.Column(db.String(20))
+    timestamp = db.Column(db.DateTime, default=datetime.now)
